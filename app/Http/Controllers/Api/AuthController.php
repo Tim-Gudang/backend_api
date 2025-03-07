@@ -9,35 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Laravel\Passport\Token;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name'     => 'required|min:4',
-            'email'    => 'required|string|email|max:255|unique:users',
-            'password' => 'required|min:8',
-        ]);
-
-        $user = User::create([
-            'name'     => $validatedData['name'],
-            'email'    => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-           'join_date' => Carbon::now()->toDateString(),
-        ]);
-
-        return response()->json([
-            'response_code' => '200',
-            'status'        => 'success',
-            'message'       => 'Registration successful',
-            'data'          => $user,
-        ], 200);
-    }
-
-    /**
-     * Handle login requests.
-     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -45,21 +20,28 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($credentials)) {
+        $user = User::where('email', $credentials['email'])->first();
+        if (!$user) {
             return response()->json([
                 'response_code' => '401',
                 'status'        => 'error',
-                'message'       => 'Invalid credentials',
+                'message'       => 'Email tidak ditemukan',
+            ], 401);
+        }
+        if (!Hash::check($credentials['password'], $user->password)) {
+            return response()->json([
+                'response_code' => '401',
+                'status'        => 'error',
+                'message'       => 'Password salah',
             ], 401);
         }
 
-        $user = Auth::user();
         $accessToken = $user->createToken('authToken')->accessToken;
 
         return response()->json([
             'response_code' => '200',
             'status'        => 'success',
-            'message'       => 'Login successful',
+            'message'       => 'Login berhasil',
             'data' => [
                 'user'  => $user,
                 'token' => $accessToken,
@@ -67,9 +49,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-     * Retrieve paginated user information.
-     */
     public function userInfo()
     {
         try {
@@ -98,5 +77,35 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function logout(Request $request)
+{
+    try {
+        $user = Auth::user();
+
+        if ($user) {
+            Token::where('user_id', $user->id)->update(['revoked' => true]);
+
+            return response()->json([
+                'response_code' => '200',
+                'status'        => 'success',
+                'message'       => 'Logout successful',
+            ], 200);
+        }
+
+        return response()->json([
+            'response_code' => '401',
+            'status'        => 'error',
+            'message'       => 'User not authenticated',
+        ], 401);
+    } catch (\Exception $e) {
+        Log::error($e);
+        return response()->json([
+            'response_code' => '500',
+            'status'        => 'error',
+            'message'       => 'Failed to logout',
+        ], 500);
+    }
+}
 }
 

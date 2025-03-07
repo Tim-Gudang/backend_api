@@ -16,16 +16,8 @@ return new class extends Migration
             $table->string('user_id')->unique(); // Custom user ID, must be unique
             $table->string('name')->nullable();
             $table->string('email')->unique(); // Email should be unique
-            $table->date('date_of_birth')->nullable(); // Date type for date_of_birth
-            $table->date('join_date')->nullable(); // Date type for join_date
             $table->string('phone_number')->nullable();
-            $table->string('status')->nullable()->index(); // Add index for frequently filtered columns
-            $table->boolean('two_step')->default(false); // Use boolean for true/false values
-            $table->timestamp('last_login')->nullable();
-            $table->string('role_name')->nullable()->index(); // Index for role_name
             $table->string('avatar')->nullable();
-            $table->string('position')->nullable();
-            $table->string('department')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password'); // Non-nullable password
             $table->rememberToken();
