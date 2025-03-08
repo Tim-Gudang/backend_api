@@ -132,5 +132,5 @@ class UserController extends Controller
             'roles' => $user->getRoleNames()
         ], 200);
     }
-
 }
+

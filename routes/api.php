@@ -38,7 +38,7 @@ Route::middleware(['auth:api', 'role:superadmin'])->get('/dashboard', function (
 });
 
 Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])
-    ->middleware(['auth:api', 'permission:manage_permissions','role:superadmin']);
+    ->middleware(['auth:api', 'role_or_permission:superadmin|manage_permissions']);
 
 
 
