@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('gudang_nama');
             $table->string('gudang_slug');
             $table->string('gudang_keterangan')->nullable();
-            $table->string('id_user')->unique();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('admin_id')->unique()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
