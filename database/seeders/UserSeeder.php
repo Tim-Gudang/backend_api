@@ -33,12 +33,15 @@ class UserSeeder extends Seeder
        $admin->assignRole($adminRole);
 
        // Buat user operator
-       $operator = User::create([
-           'name' => 'Operator',
-           'email' => 'operator@example.com',
-           'password' => Hash::make('password123'),
-           'role_id' => $operatorRole->id,
-       ]);
-       $operator->assignRole($operatorRole);
+       for ($i = 1; $i <= 5; $i++) {
+        $operator = User::create([
+            'name' => "Operator$i",
+            'email' => "operator$i@example.com",
+            'password' => Hash::make('password123'),
+            'role_id' => $operatorRole->id ?? null,
+        ]);
+
+        $operator->assignRole($operatorRole);
     }
+}
 }

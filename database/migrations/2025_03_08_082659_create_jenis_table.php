@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('jenis_barangs', function (Blueprint $table) {
             $table->id('jenisbarang_id');
             $table->string('jenisbarang_nama');
-            $table->string('jenisbarang_slug')->unique();
+    $table->string('jenisbarang_slug')->unique();
             $table->string('jenisbarang_keterangan')->nullable();
-            $table->string('id_user')->unique();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

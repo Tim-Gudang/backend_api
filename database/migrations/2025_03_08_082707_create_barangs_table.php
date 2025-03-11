@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jenisbarang_id')->nullable()->constrained('jenis_barangs', 'jenisbarang_id')->onDelete('set null');
-            $table->foreignId('satuan_id')->nullable()->constrained('satuans', 'satuan_id')->onDelete('set null');
-            $table->foreignId('gudang_id')->nullable()->constrained('gudangs')->onDelete('set null');
+            $table->foreignId('jenisbarang_id')->nullable()->constrained('jenis_barangs', 'jenisbarang_id')->nullOnDelete();
+            $table->foreignId('satuan_id')->nullable()->constrained('satuans', 'satuan_id')->nullOnDelete();
+            $table->foreignId('gudang_id')->nullable()->constrained('gudangs')->nullOnDelete();
             $table->enum('jenis_barang', ['sekali_pakai', 'berulang'])->nullable();
             $table->string('barang_kode')->unique();
             $table->string('barang_nama');
             $table->string('barang_slug')->unique();
-            $table->decimal('barang_harga', 15, 2)->default(0);
+            $table->decimal('barang_harga')->default(0);
             $table->string('barang_gambar')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
