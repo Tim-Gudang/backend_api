@@ -41,13 +41,15 @@ Route::middleware(['auth:api'])->group(function () {
         return response()->json(['message' => 'Hanya Superadmin bisa akses']);
     });
     Route::post('/barang', [BarangController::class, 'store']);
+    Route::delete('/barang/{id}', [BarangController::class, 'destroy']);
 
 });
 
+Route::get('/barang/{id}/qrcode', [BarangController::class, 'generateQRCode']);
 
 //memastikan cek role login
-Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
 
+Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
 Route::middleware(['auth:api', 'role:superadmin'])->get('/dashboard', function () {
 });
 
