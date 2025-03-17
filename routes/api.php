@@ -13,7 +13,7 @@ Route::prefix('auth')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('login', 'login')->name('auth.login');
     });
-// untuk logout dan cek user info
+    // untuk logout dan cek user info
     Route::middleware('auth:api')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('user', [AuthController::class, 'userInfo'])->name('auth.user');
@@ -29,29 +29,28 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['permission:view_user'])->put('/users/{id}', [UserController::class, 'update']);
     Route::middleware(['permission:delete_user'])->delete('/users/{id}', [UserController::class, 'destroy']);
     Route::get('/check-roles', [UserController::class, 'checkRoles']);
-      //role
+
+    //role
     Route::middleware(['permission:create_role'])->post('/roles', [RoleController::class, 'createRole']);
     Route::middleware(['permission:view_role'])->get('/roles', [RoleController::class, 'index']);
     Route::middleware(['permission:view_role'])->get('/roles/{id}', [RoleController::class, 'show']);
     Route::middleware(['permission:update_role'])->put('/roles/{id}', [RoleController::class, 'update']);
     Route::middleware(['permission:delete_role'])->delete('/roles/{id}', [RoleController::class, 'destroy']);
+
     //cek role saja kalau itu admin
-    Route::get('/dashboard', function(){
+    Route::get('/dashboard', function () {
         return response()->json(['message' => 'Hanya Superadmin bisa akses']);
     });
+
+    // barang
     Route::post('/barang', [BarangController::class, 'store']);
-
+    Route::delete('/barang/{id}', [BarangController::class, 'destroy']);
+    Route::get('/barang/{id}/qrcode', [BarangController::class, 'generateQRCode']); // Menambahkan perubahan dari branch lain
 });
 
-//memastikan cek role login
+// memastikan cek role login
 Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
-
-Route::middleware(['auth:api', 'role:superadmin'])->get('/dashboard', function () {
-});
+Route::middleware(['auth:api', 'role:superadmin'])->get('/dashboard', function () {});
 
 Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])
     ->middleware(['auth:api', 'role_or_permission:superadmin|manage_permissions']);
-
-
-
-
