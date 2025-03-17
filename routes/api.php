@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 // prefix untuk auth
 Route::prefix('auth')->group(function () {
     Route::controller(AuthController::class)->group(function () {
-        Route::post('register', 'register')->name('auth.register');
         Route::post('login', 'login')->name('auth.login');
     });
 // untuk logout dan cek user info
@@ -43,7 +42,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/barang', [BarangController::class, 'store']);
 
 });
-
 
 //memastikan cek role login
 Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
