@@ -42,14 +42,15 @@ Route::middleware(['auth:api'])->group(function () {
     });
     Route::post('/barang', [BarangController::class, 'store']);
     Route::delete('/barang/{id}', [BarangController::class, 'destroy']);
-
+    Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodes']);
 });
 
-Route::get('/barang/{id}/qrcode', [BarangController::class, 'generateQRCode']);
+Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateAndSaveQRCode']);
 
 //memastikan cek role login
 
 Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
+
 Route::middleware(['auth:api', 'role:superadmin'])->get('/dashboard', function () {
 });
 

@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('barang_masuks', function (Blueprint $table) {
             $table->id();
+            $table->string('barang_kode');
+            $table->string('pengecek_id');
+            $table->foreignId('operator')->nullable()->constrained('users')->onDelete('cascade');
+            $table->string('bm_tanggal');
+            $table->string('bm_jumlah');
             $table->timestamps();
         });
     }

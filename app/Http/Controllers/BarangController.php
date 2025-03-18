@@ -6,7 +6,9 @@ use App\Models\Barang;
 use App\Models\BarangGudang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -69,18 +71,81 @@ class BarangController extends Controller
         return response()->json(['message' => 'Barang berhasil dihapus'], 200);
     }
 
-    public function generateQRCode($id)
-{
+    public function generateAndSaveQRCode($id)
+    {
+       // Ambil data barang berdasarkan ID
     $barang = Barang::find($id);
-
     if (!$barang) {
-        return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+        return response()->json(['error' => 'Barang tidak ditemukan'], 404);
     }
 
-    $qrCode = QrCode::format('png')->size(200)->generate($barang->barang_kode);
+    // Tentukan nama file dan path relatif dalam disk "public"
+    $fileName = $barang->barang_kode . '.svg';
+    $path = 'qr_code/' . $fileName;
 
-    return Response::make($qrCode, 200, ['Content-Type' => 'image/png']);
+    // Konten QR Code dengan label
+    $qrContent = $barang->barang_kode;
+
+    // Generate QR Code dalam format SVG
+    $qrCodeContent = QrCode::format('svg')
+        ->size(300)
+        ->errorCorrection('H')
+        ->generate($qrContent);
+
+    // Simpan QR Code ke storage disk "public"
+    Storage::disk('public')->put($path, $qrCodeContent);
+
+    // Buat URL publik untuk file QR Code
+    $qrCodeUrl = asset('storage/' . $path);
+
+    return response()->json([
+        'barang_kode' => $barang->barang_kode,
+        'qr_code_url' => $qrCodeUrl
+    ]);
+
+    }
+
+    public function generateAllQRCodes()
+    {
+        // Ambil semua data barang
+        $barangs = Barang::all();
+
+        // Array untuk menyimpan URL QR Code tiap barang
+        $qrCodes = [];
+
+        foreach ($barangs as $barang) {
+            // Tentukan nama file dan path relatif di disk "public"
+            $fileName = $barang->barang_kode . '.svg';
+            $path = 'qr_code/' . $fileName;
+
+            $qrContent = $barang->barang_kode;
+
+            // Generate QR Code dalam format SVG (tidak memerlukan Imagick)
+            $qrCodeContent = QrCode::format('svg')
+                ->size(300)
+                ->errorCorrection('H')
+                ->generate($qrContent);
+
+            // Simpan QR Code ke storage disk "public"
+            Storage::disk('public')->put($path, $qrCodeContent);
+
+            // Buat URL publik untuk file QR Code
+            $qrCodeUrl = asset('storage/' . $path);
+
+            // Simpan URL ke array
+            $qrCodes[] = [
+                'barang_id'    => $barang->id,
+                'barang_kode'  => $barang->barang_kode,
+                'qr_code_url'  => $qrCodeUrl,
+            ];
+        }
+
+        // Kembalikan response JSON dengan daftar QR Code
+        return response()->json([
+            'message' => 'QR codes generated successfully.',
+            'data'    => $qrCodes,
+        ]);
+
 }
 
 }
-
