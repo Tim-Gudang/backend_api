@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\GudangController;
+use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,10 +26,19 @@ Route::prefix('auth')->group(function () {
 // untuk role super admin
 Route::middleware(['auth:api'])->group(function () {
     //user
-
     Route::apiResource('users', UserController::class);
-      //role
+  
+    //role
     Route::apiResource('roles', RoleController::class);
+  
+    Route::apiResource('gudangs', GudangController::class)->middleware('role:superadmin');
+
+    Route::apiResource('satuan', SatuanController::class)->middleware('role:superadmin');
+
+    Route::apiResource('jenis-barang', JenisBarangController::class)->middleware('role:superadmin');
+    Route::patch('jenis-barang/{id}/restore', [JenisBarangController::class, 'restore']);
+    Route::delete('jenis-barang/{id}/force-delete', [JenisBarangController::class, 'forceDelete']);
+ 
     //barang
     Route::apiResource('barangs',BarangController::class);
     Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateQRCodeimage']);

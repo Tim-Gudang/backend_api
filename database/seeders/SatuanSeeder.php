@@ -14,12 +14,12 @@ class SatuanSeeder extends Seeder
     public function run(): void
     {
         DB::table('satuans')->insert([
-            ['satuan_nama' => 'Gulung', 'satuan_slug' => 'gulung', 'satuan_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['satuan_nama' => 'Unit', 'satuan_slug' => 'unit', 'satuan_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['satuan_nama' => 'Kg', 'satuan_slug' => 'kg', 'satuan_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['satuan_nama' => 'Gram', 'satuan_slug' => 'gram', 'satuan_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['satuan_nama' => 'Mililiter', 'satuan_slug' => 'mililiter', 'satuan_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['satuan_nama' => 'Liter', 'satuan_slug' => 'liter', 'satuan_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()]
+            ['name' => 'Gulung', 'slug' => 'gulung', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Unit', 'slug' => 'unit', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Kg', 'slug' => 'kg', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Gram', 'slug' => 'gram', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Mililiter', 'slug' => 'mililiter', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Liter', 'slug' => 'liter', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()]
         ]);
     }
 }

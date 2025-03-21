@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('barang_keluars', function (Blueprint $table) {
             $table->id();
+            $table->softDeletes();
             $table->foreignId('barang_id')->constrained('barangs')->onDelete('cascade');
-            $table->foreignId('operator')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('bk_tanggal');
-            $table->string('bk_jumlah');
+            $table->string('bk_stok');
             $table->timestamps();
         });
     }

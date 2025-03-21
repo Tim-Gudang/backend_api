@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('gudangs', function (Blueprint $table) {
             $table->id();
-            $table->string('gudang_nama');
-            $table->string('gudang_slug');
-            $table->string('gudang_keterangan')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->foreignId('operator_id')->unique()->constrained('users')->onDelete('cascade');
-            $table->string('gambar_gudang');
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('description')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -29,6 +27,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('gudangs');
-
     }
 };

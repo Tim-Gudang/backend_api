@@ -6,31 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Satuan extends Model
+class GudangUser extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $fillable = ['gudang_id', 'user_id'];
 
-    protected $table = 'satuans';
-    protected $primaryKey = 'id';
-
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'user_id',
-    ];
-
-    protected  $casts = [
+    protected $casts = [
         'created_at' => 'datetime:Y-m-d H:m:s',
         'updated_at' => 'datetime:Y-m-d H:m:s',
         'deleted_at' => 'datetime:Y-m-d H:m:s',
     ];
 
-    public function barangs()
+    public function gudang()
     {
-        return $this->hasMany(Barang::class, 'satuan_id', 'id');
+        return $this->belongsTo(Gudang::class, 'gudang_id');
     }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

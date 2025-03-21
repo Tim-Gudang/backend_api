@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('barang_masuks', function (Blueprint $table) {
             $table->id();
+            $table->softDeletes();
             $table->foreignId('barang_id')->constrained('barangs')->onDelete('cascade');
-            $table->foreignId('operator')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('bm_tanggal');
-            $table->string('bm_jumlah');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->datetime('bm_tanggal');
+            $table->string('bm_stok');
             $table->timestamps();
         });
     }

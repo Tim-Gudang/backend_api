@@ -14,20 +14,20 @@ class JenisBarangSeeder extends Seeder
     public function run(): void
     {
         DB::table('jenis_barangs')->insert([
-            ['jenisbarang_nama' => 'Perkakas', 'jenisbarang_slug' => 'perkakas', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Fungisida', 'jenisbarang_slug' => 'fungisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Insektisida', 'jenisbarang_slug' => 'insektisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Herbisida', 'jenisbarang_slug' => 'herbisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Bakterisida', 'jenisbarang_slug' => 'bakterisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Rodentisida', 'jenisbarang_slug' => 'rodentisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Moluskisida', 'jenisbarang_slug' => 'moluskisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Nematisida', 'jenisbarang_slug' => 'nematisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Pupuk', 'jenisbarang_slug' => 'pupuk', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Bahan Bakar', 'jenisbarang_slug' => 'bahan-bakar', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Keperluan Lapangan', 'jenisbarang_slug' => 'keperluan-lapangan', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Perekat & Perata', 'jenisbarang_slug' => 'perekat-perata', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Bakterisida & Fungisida', 'jenisbarang_slug' => 'bakterisida-fungisida', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['jenisbarang_nama' => 'Zat Pengatur Tumbuh', 'jenisbarang_slug' => 'zat-pengatur-tumbuh', 'jenisbarang_keterangan' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()]
+            ['name' => 'Perkakas', 'slug' => 'perkakas', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Fungisida', 'slug' => 'fungisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Insektisida', 'slug' => 'insektisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Herbisida', 'slug' => 'herbisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Bakterisida', 'slug' => 'bakterisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Rodentisida', 'slug' => 'rodentisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Moluskisida', 'slug' => 'moluskisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Nematisida', 'slug' => 'nematisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Pupuk', 'slug' => 'pupuk', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Bahan Bakar', 'slug' => 'bahan-bakar', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Keperluan Lapangan', 'slug' => 'keperluan-lapangan', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Perekat & Perata', 'slug' => 'perekat-perata', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Bakterisida & Fungisida', 'slug' => 'bakterisida-fungisida', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Zat Pengatur Tumbuh', 'slug' => 'zat-pengatur-tumbuh', 'description' => null, 'user_id' => 1, 'created_at' => now(), 'updated_at' => now()]
         ]);
     }
 }
