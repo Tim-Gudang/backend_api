@@ -11,10 +11,9 @@ use Illuminate\Support\Facades\Route;
 // prefix untuk auth
 Route::prefix('auth')->group(function () {
     Route::controller(AuthController::class)->group(function () {
-        Route::post('register', 'register')->name('auth.register');
         Route::post('login', 'login')->name('auth.login');
     });
-// untuk logout dan cek user info
+    // untuk logout dan cek user info
     Route::middleware('auth:api')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('user', [AuthController::class, 'userInfo'])->name('auth.user');
@@ -24,6 +23,7 @@ Route::prefix('auth')->group(function () {
 // untuk role super admin
 Route::middleware(['auth:api'])->group(function () {
     //user
+
     Route::apiResource('users', UserController::class);
       //role
     Route::apiResource('roles', RoleController::class);
@@ -39,5 +39,6 @@ Route::post('/toggle-permission', [PermissionController::class, 'togglePermissio
 
 //memastikan cek role login
 Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
+
 
 
