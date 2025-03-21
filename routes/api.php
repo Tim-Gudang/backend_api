@@ -28,6 +28,10 @@ Route::middleware(['auth:api'])->group(function () {
         return response()->json(['message' => 'Hanya Superadmin bisa akses']);
     });
 
+    Route::apiResource('users', UserController::class);
+
+    Route::apiResource('roles', RoleController::class);
+
     Route::apiResource('gudangs', GudangController::class)->middleware('role:superadmin');
 
     Route::apiResource('satuan', SatuanController::class)->middleware('role:superadmin');
@@ -36,14 +40,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::patch('jenis-barang/{id}/restore', [JenisBarangController::class, 'restore']);
     Route::delete('jenis-barang/{id}/force-delete', [JenisBarangController::class, 'forceDelete']);
 
-    Route::apiResource('users', UserController::class);
 
-    Route::apiResource('roles', RoleController::class);
-
-    Route::apiResource('barangs', BarangController::class);
-    Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateAndSaveQRCode']);
-    Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodes']);
+    //barang
+    Route::apiResource('barangs',BarangController::class);
+    Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateQRCodeimage']);
+    Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodesimage']);
     Route::get('/scan-qrcode', [BarangController::class, 'processScannedQr']);
+    Route::get('/generate/{id}', [BarangController::class, 'generateQRCodeById']);
 });
 
 Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])
