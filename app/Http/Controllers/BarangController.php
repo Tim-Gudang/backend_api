@@ -7,17 +7,45 @@ use App\Models\BarangGudang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use App\Http\Controllers\QrReader;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Zxing\QrReader as ZxingQrReader;
 
-class BarangController extends Controller
+class BarangController extends Controller implements HasMiddleware
 {
+    /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_barang', only: ['index']),
+            new Middleware('permission:create_barang', only: ['store']),
+            new Middleware('permission:update_barang', only: ['update']),
+            new Middleware('permission:delete_barang', only: ['destroy']),
+        ];
+    }
+    public function index()
+{
+    $barang = Barang::all();
+    return response()->json([
+        'message' => 'Daftar barang berhasil diambil!',
+        'data' => $barang
+    ], 200);
+}
+
     public function store(Request $request)
     {
+
 
         $validator = Validator::make($request->all(), [
             'jenisbarang_id' => 'nullable|exists:jenis_barangs,jenisbarang_id',
@@ -71,31 +99,69 @@ class BarangController extends Controller
         return response()->json(['message' => 'Barang berhasil dihapus'], 200);
     }
 
+    public function update(Request $request, $id)
+{
+    $barang = Barang::find($id);
+    if (!$barang) {
+        return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+    }
+
+    $validator = Validator::make($request->all(), [
+        'jenisbarang_id' => 'nullable|exists:jenis_barangs,jenisbarang_id',
+        'satuan_id' => 'nullable|exists:satuans,satuan_id',
+        'jenis_barang' => 'nullable|in:sekali_pakai,berulang',
+        'barang_nama' => 'required|string|max:255|unique:barangs,barang_nama,' . $id . ',barang_id',
+        'barang_harga' => 'required|numeric|min:0',
+        'barang_gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ], [
+        'barang_nama.unique' => 'Barang dengan nama ini sudah ada di database!',
+        'barang_nama.required' => 'Nama barang wajib diisi!',
+        'barang_harga.required' => 'Harga barang tidak boleh kosong!',
+        'barang_harga.numeric' => 'Harga barang harus berupa angka!',
+        'barang_gambar.image' => 'File harus berupa gambar!',
+        'barang_gambar.mimes' => 'Format gambar harus jpeg, png, atau jpg!',
+        'barang_gambar.max' => 'Ukuran gambar maksimal 2MB!',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Input tidak valid!',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    $data = $request->all();
+    $data['barang_slug'] = Str::slug($request->barang_nama);
+
+    if ($request->hasFile('barang_gambar')) {
+        Storage::disk('public')->delete($barang->barang_gambar);
+        $data['barang_gambar'] = $request->file('barang_gambar')->store('img/barang', 'public');
+    }
+
+    $barang->update($data);
+
+    return response()->json([
+        'message' => 'Barang berhasil diperbarui!',
+        'data' => $barang
+    ], 200);
+}
+
     public function generateAndSaveQRCode($id)
     {
-       // Ambil data barang berdasarkan ID
     $barang = Barang::find($id);
     if (!$barang) {
         return response()->json(['error' => 'Barang tidak ditemukan'], 404);
     }
 
-    // Tentukan nama file dan path relatif dalam disk "public"
     $fileName = $barang->barang_kode . '.svg';
     $path = 'qr_code/' . $fileName;
 
-    // Konten QR Code dengan label
     $qrContent = $barang->barang_kode;
-
-    // Generate QR Code dalam format SVG
     $qrCodeContent = QrCode::format('svg')
         ->size(300)
         ->errorCorrection('H')
         ->generate($qrContent);
-
-    // Simpan QR Code ke storage disk "public"
     Storage::disk('public')->put($path, $qrCodeContent);
-
-    // Buat URL publik untuk file QR Code
     $qrCodeUrl = asset('storage/' . $path);
 
     return response()->json([
@@ -105,47 +171,85 @@ class BarangController extends Controller
 
     }
 
-    public function generateAllQRCodes()
+//     public function generateAllQRCodes()
+//     {
+//         $barangs = Barang::all();
+//         $qrCodes = [];
+
+//         foreach ($barangs as $barang) {
+//             $fileName = $barang->barang_kode . '.png';
+//             $path = 'qr_code/' . $fileName;
+
+//             $qrContent = $barang->barang_kode;
+
+//             $qrCodeContent = QrCode::format('png')
+//                 ->size(300)
+//                 ->errorCorrection('H')
+//                 ->generate($qrContent);
+
+//             Storage::disk('public')->put($path, $qrCodeContent);
+//             $qrCodeUrl = asset('storage/' . $path);
+//             $qrCodes[] = [
+//                 'barang_id'    => $barang->id,
+//                 'barang_kode'  => $barang->barang_kode,
+//                 'qr_code_url'  => $qrCodeUrl,
+//             ];
+//         }
+//         return response()->json([
+//             'message' => 'QR codes generated successfully.',
+//             'data'    => $qrCodes,
+//         ]);
+// }
+public function generateAllQRCodes(): \Illuminate\Http\JsonResponse
     {
-        // Ambil semua data barang
         $barangs = Barang::all();
+        $qrCodesHtml = "
+            <h2 style='text-align: center;'>Daftar QR Code</h2>
+            <table style='width: 100%; border-collapse: collapse; text-align: center;'>
+        ";
 
-        // Array untuk menyimpan URL QR Code tiap barang
-        $qrCodes = [];
-
+        $counter = 0;
         foreach ($barangs as $barang) {
-            // Tentukan nama file dan path relatif di disk "public"
-            $fileName = $barang->barang_kode . '.svg';
-            $path = 'qr_code/' . $fileName;
-
             $qrContent = $barang->barang_kode;
+            $qrCodeBase64 = 'data:image/png;base64,' . base64_encode(
+                QrCode::format('png')->size(300)->errorCorrection('H')->generate($qrContent)
+            );
 
-            // Generate QR Code dalam format SVG (tidak memerlukan Imagick)
-            $qrCodeContent = QrCode::format('svg')
-                ->size(300)
-                ->errorCorrection('H')
-                ->generate($qrContent);
+            // Buka baris baru setiap 2 QR Code
+            if ($counter % 2 == 0) {
+                $qrCodesHtml .= "<tr>";
+            }
 
-            // Simpan QR Code ke storage disk "public"
-            Storage::disk('public')->put($path, $qrCodeContent);
+           // tempat menambahkan tataletak qr_code
+            $qrCodesHtml .= "
+                <td style='border: 1px solid #000; padding: 10px;border:none'>
+                    <img src='{$qrCodeBase64}' width='150' height='150'>
+                    <p style='font-size: 14px;'>{$barang->barang_kode}</p>
+                </td>
+            ";
 
-            // Buat URL publik untuk file QR Code
-            $qrCodeUrl = asset('storage/' . $path);
+            if ($counter % 2 == 1) {
+                $qrCodesHtml .= "</tr>";
+            }
 
-            // Simpan URL ke array
-            $qrCodes[] = [
-                'barang_id'    => $barang->id,
-                'barang_kode'  => $barang->barang_kode,
-                'qr_code_url'  => $qrCodeUrl,
-            ];
+            $counter++;
         }
 
-        // Kembalikan response JSON dengan daftar QR Code
+        // Tutup baris jika terakhir hanya 1 kolom
+        if ($counter % 2 == 1) {
+            $qrCodesHtml .= "<td></td></tr>";
+        }
+
+        $qrCodesHtml .= "</table>";
+
+        $pdf = Pdf::loadHTML($qrCodesHtml)->setPaper('a4', 'portrait');
+
+        $pdfPath = 'qr_codes/generated_qr_codes.pdf';
+        Storage::disk('public')->put($pdfPath, $pdf->output());
+
         return response()->json([
-            'message' => 'QR codes generated successfully.',
-            'data'    => $qrCodes,
-        ]);
-
+            'message' => 'QR codes PDF generated successfully.',
+            'pdf_url' => asset('storage/' . $pdfPath),
+        ], 200);
 }
-
 }
