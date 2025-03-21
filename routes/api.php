@@ -29,9 +29,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('roles', RoleController::class);
     //barang
     Route::apiResource('barangs',BarangController::class);
-    Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateAndSaveQRCode']);
-    Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodes']);
+    Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateQRCodeimage']);
+    Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodesimage']);
     Route::get('/scan-qrcode', [BarangController::class, 'processScannedQr']);
+    Route::get('/generate/{id}', [BarangController::class, 'generateQRCodeById']);
 });
 
 Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])
