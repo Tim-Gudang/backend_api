@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('barang_masuks', function (Blueprint $table) {
+        Schema::create('barang__peminjamen', function (Blueprint $table) {
             $table->id();
-            $table->softDeletes();
             $table->foreignId('barang_id')->constrained('barangs')->onDelete('cascade');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->datetime('bm_tanggal');
-            $table->string('bm_stok');
+            $table->foreignId('operator')->nullable()->constrained('users')->onDelete('cascade');
+            $table->integer('jumlah');
+            $table->enum('status', ['dipinjam', 'dikembalikan'])->default('dipinjam');
+            $table->dateTime('tanggal_pinjam');
+            $table->dateTime('tanggal_kembali')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barang_masuks');
+        Schema::dropIfExists('barang__peminjamen');
     }
 };

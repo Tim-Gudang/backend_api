@@ -3,11 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Validator;
 
-class RoleController extends Controller
+class RoleController extends Controller implements HasMiddleware
 {
+    /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_role', only: ['index', 'show']),
+            new Middleware('permission:create_role', only: ['store']),
+            new Middleware('permission:update_role', only: ['update']),
+            new Middleware('permission:delete_role', only: ['destroy']),
+        ];
+    }
+
     public function createRole(Request $request)
     {
         $validator = Validator::make($request->all(), [
