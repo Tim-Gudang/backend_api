@@ -2,16 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_user', only: ['index', 'show']),
+            new Middleware('permission:create_user', only: ['store']),
+            new Middleware('permission:update_user', only: ['update']),
+            new Middleware('permission:delete_user', only: ['destroy']),
+        ];
+    }
     // daftar pengguna
     public function index()
     {

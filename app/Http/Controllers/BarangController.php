@@ -6,16 +6,46 @@ use App\Models\Barang;
 use App\Models\BarangGudang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use App\Http\Controllers\QrReader;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Zxing\QrReader as ZxingQrReader;
 
-class BarangController extends Controller
+class BarangController extends Controller implements HasMiddleware
 {
+    /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_barang', only: ['index']),
+            new Middleware('permission:create_barang', only: ['store']),
+            new Middleware('permission:update_barang', only: ['update']),
+            new Middleware('permission:delete_barang', only: ['destroy']),
+        ];
+    }
+    public function index()
+    {
+        $barang = Barang::all();
+        return response()->json([
+            'message' => 'Daftar barang berhasil diambil!',
+            'data' => $barang
+        ], 200);
+    }
+
     public function store(Request $request)
     {
+
 
         $validator = Validator::make($request->all(), [
             'jenisbarang_id' => 'nullable|exists:jenis_barangs,jenisbarang_id',

@@ -39,7 +39,7 @@ class Barang extends Model
 
         static::creating(function ($barang) {
             if (empty($barang->barang_kode)) {
-                $barang->barang_kode = 'BRG-' . rand(1000, 9999);
+                $barang->barang_kode = 'BRG-' . rand(100000, 999999);
             }
         });
 
