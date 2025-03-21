@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,9 +30,14 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:users,name',
             'email' => 'required|email|unique:users,email',
-            'password' => ['required','string','min:8','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).+$/','confirmed'
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).+$/',
+                'confirmed'
             ],
-            'roles' => 'required|array'
+            'roles' => 'required|array|exists:roles,name'
         ], [
             'name.unique' => 'Nama sudah digunakan, silakan gunakan nama lain.',
             'email.unique' => 'Email sudah terdaftar, silakan gunakan email lain.',
@@ -43,6 +49,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
+
 
         $user = User::create([
             'name' => $request->name,
@@ -58,7 +65,6 @@ class UserController extends Controller
             'data' => $user
         ], 201);
     }
-
 
     // berdasar id
     public function show($id)
@@ -134,20 +140,4 @@ class UserController extends Controller
             'message' => 'Pengguna berhasil dihapus'
         ], 200);
     }
-
-    // cek role ni
-    public function checkRoles()
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['error' => 'Tidak memiliki akses'], 403);
-        }
-
-        return response()->json([
-            'user'  => $user->name,
-            'roles' => $user->getRoleNames()
-        ], 200);
-    }
 }
-

@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jenisbarang_id')->nullable()->constrained('jenis_barangs', 'jenisbarang_id')->nullOnDelete();
-            $table->foreignId('satuan_id')->nullable()->constrained('satuans', 'satuan_id')->nullOnDelete();
-            $table->enum('jenis_barang', ['sekali_pakai', 'berulang']);
+            $table->foreignId('jenisbarang_id')->nullable()->constrained('jenis_barangs')->nullOnDelete();
+            $table->foreignId('satuan_id')->nullable()->constrained('satuans')->nullOnDelete();
+            $table->enum('klasifikasi_barang', ['sekali_pakai', 'berulang']);
             $table->string('barang_kode')->unique();
             $table->string('barang_nama');
             $table->string('barang_slug')->unique();
             $table->decimal('barang_harga')->default(0);
             $table->string('barang_gambar')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

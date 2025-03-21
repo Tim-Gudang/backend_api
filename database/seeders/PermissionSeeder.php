@@ -33,10 +33,20 @@ class PermissionSeeder extends Seeder
             'view_barang',
             'delete_barang',
 
+            'create_gudang',
+            'update_gudang',
+            'view_gudang',
+            'delete_gudang',
+
             'create_satuan',
             'update_satuan',
             'view_satuan',
             'delete_satuan',
+
+            'create_jenis_barang',
+            'update_jenis_barang',
+            'view_jenis_barang',
+            'delete_jenis_barang',
 
             'create_barang_masuk',
             'update_barang_masuk',

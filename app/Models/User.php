@@ -12,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasRoles, HasApiTokens ,HasFactory, Notifiable;
+    use HasRoles, HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,25 +20,22 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'user_id',
         'name',
         'email',
-        'join_date',
-        'last_login',
         'phone_number',
-        'status',
-        'role_name',
         'avatar',
-        'position',
-        'department',
-        'role_id',
         'password',
+        'role_id',
     ];
 
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
 
+    public function gudangs()
+    {
+        return $this->belongsToMany(Gudang::class, 'gudang_users');
     }
 
     /**
@@ -61,23 +58,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'created_at' => 'datetime:Y-m-d H:m:s',
+            'updated_at' => 'datetime:Y-m-d H:m:s',
+            'deleted_at' => 'datetime:Y-m-d H:m:s',
         ];
-    }
-     /**
-     * Boot method for model event hooks.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        self::creating(function ($model) {
-            $latestUser = self::orderBy('user_id', 'desc')->first();
-
-            $nextID = $latestUser ? intval(substr($latestUser->user_id, 3)) + 1 : 1;
-
-            do {
-                $model->user_id = 'KH_' . sprintf("%03d", $nextID++);
-            } while (self::where('user_id', $model->user_id)->exists());
-        });
     }
 }

@@ -70,17 +70,15 @@ class BarangController extends Controller
     }
 
     public function generateQRCode($id)
-{
-    $barang = Barang::find($id);
+    {
+        $barang = Barang::find($id);
 
-    if (!$barang) {
-        return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+        if (!$barang) {
+            return response()->json(['message' => 'Barang tidak ditemukan'], 404);
+        }
+
+        $qrCode = QrCode::format('png')->size(200)->generate($barang->barang_kode);
+
+        return Response::make($qrCode, 200, ['Content-Type' => 'image/png']);
     }
-
-    $qrCode = QrCode::format('png')->size(200)->generate($barang->barang_kode);
-
-    return Response::make($qrCode, 200, ['Content-Type' => 'image/png']);
 }
-
-}
-
