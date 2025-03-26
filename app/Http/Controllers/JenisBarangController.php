@@ -134,7 +134,7 @@ class JenisBarangController extends Controller
         if (!$jenisBarang) {
             return response()->json(['message' => 'Jenis barang tidak ditemukan'], 404);
         }
-        
+
         $jenisBarang->update(['user_id' => auth()->id()]);
         $jenisBarang->delete();
 

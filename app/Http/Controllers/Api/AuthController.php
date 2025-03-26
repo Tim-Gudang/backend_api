@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RefreshTokenRequest;
 use App\Models\User;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Token;
 
@@ -49,34 +53,7 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function userInfo()
-    {
-        try {
-            $users = User::latest()->paginate(10);
 
-            return response()->json([
-                'response_code' => '200',
-                'status'        => 'success',
-                'message'       => 'User list retrieved successfully',
-                'data' => [
-                    'users' => $users->items(),
-                    'pagination' => [
-                        'total'        => $users->total(),
-                        'per_page'     => $users->perPage(),
-                        'current_page' => $users->currentPage(),
-                        'last_page'    => $users->lastPage(),
-                    ],
-                ],
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error($e);
-            return response()->json([
-                'response_code' => '500',
-                'status'        => 'error',
-                'message'       => 'Failed to retrieve user list',
-            ], 500);
-        }
-    }
 
     public function logout(Request $request)
 {
@@ -106,6 +83,6 @@ class AuthController extends Controller
             'message'       => 'Failed to logout',
         ], 500);
     }
-}
+    }
 }
 

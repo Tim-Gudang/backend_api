@@ -102,17 +102,14 @@ class BarangController extends Controller implements HasMiddleware
 
     public function update(Request $request, $id)
     {
-        $barang = Barang::find($id);
-        if (!$barang) {
-            return response()->json(['message' => 'Barang tidak ditemukan'], 404);
-        }
+        $barang = Barang::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
             'jenisbarang_id' => 'nullable|exists:jenis_barangs,jenisbarang_id',
             'satuan_id' => 'nullable|exists:satuans,satuan_id',
             'jenis_barang' => 'nullable|in:sekali_pakai,berulang',
-            'barang_nama' => 'required|string|max:255|unique:barangs,barang_nama,' . $id . ',barang_id',
-            'barang_harga' => 'required|numeric|min:0',
+            'barang_nama' => 'sometimes|required|string|max:255|unique:barangs,barang_nama,' . $id,
+            'barang_harga' => 'sometimes|required|numeric|min:0',
             'barang_gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'barang_nama.unique' => 'Barang dengan nama ini sudah ada di database!',
@@ -124,6 +121,7 @@ class BarangController extends Controller implements HasMiddleware
             'barang_gambar.max' => 'Ukuran gambar maksimal 2MB!',
         ]);
 
+
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Input tidak valid!',
@@ -131,12 +129,14 @@ class BarangController extends Controller implements HasMiddleware
             ], 422);
         }
 
-        $data = $request->all();
-        $data['barang_slug'] = Str::slug($request->barang_nama);
+        $data = $request->except('barang_gambar');
 
         if ($request->hasFile('barang_gambar')) {
-            Storage::disk('public')->delete($barang->barang_gambar);
-            $data['barang_gambar'] = $request->file('barang_gambar')->store('img/barang', 'public');
+            if ($barang->barang_gambar) {
+                Storage::disk('public')->delete($barang->barang_gambar);
+            }
+            $gambarPath = $request->file('barang_gambar')->store('img/barang', 'public');
+            $data['barang_gambar'] = $gambarPath;
         }
 
         $barang->update($data);
@@ -144,8 +144,10 @@ class BarangController extends Controller implements HasMiddleware
         return response()->json([
             'message' => 'Barang berhasil diperbarui!',
             'data' => $barang
-        ], 200);
+        ]);
     }
+
+
 
     public function generateQRCodeimage($id)
     {

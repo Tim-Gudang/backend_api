@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller implements HasMiddleware
@@ -17,7 +17,7 @@ class RoleController extends Controller implements HasMiddleware
     {
         return [
             'auth:api',
-            new Middleware('permission:view_role', only: ['index', 'show']),
+            new Middleware('permission:view_role', only: ['index']),
             new Middleware('permission:create_role', only: ['store']),
             new Middleware('permission:update_role', only: ['update']),
             new Middleware('permission:delete_role', only: ['destroy']),

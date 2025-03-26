@@ -6,7 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller implements HasMiddleware
@@ -24,15 +26,14 @@ class UserController extends Controller implements HasMiddleware
             new Middleware('permission:delete_user', only: ['destroy']),
         ];
     }
+
+
     // daftar pengguna
     public function index()
     {
-        $users = User::with('roles')->paginate(5);
-
         return response()->json([
             'success' => true,
-            'message' => 'Daftar pengguna berhasil diambil',
-            'data' => $users
+            'data' => Auth::user()
         ], 200);
     }
 
@@ -78,64 +79,100 @@ class UserController extends Controller implements HasMiddleware
         ], 201);
     }
 
-    // berdasar id
-    public function show($id)
-    {
-        $user = User::with('roles')->find($id);
 
-        if (!$user) {
-            return response()->json(['error' => 'Pengguna tidak ditemukan'], 404);
-        }
 
-        return response()->json([
-            'success' => true,
-            'data' => $user
-        ], 200);
+    public function changePassword(Request $request)
+{
+    $user = Auth::user();
+
+    $validator = Validator::make($request->all(), [
+        'current_password' => 'required',
+        'new_password' => [
+            'required',
+            'string',
+            'min:8',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).+$/',
+            'confirmed'
+        ],
+    ], [
+        'new_password.min' => 'Password baru minimal harus 8 karakter.',
+        'new_password.regex' => 'Password baru harus mengandung minimal 1 huruf besar, 1 huruf kecil, dan 1 simbol.',
+        'new_password.confirmed' => 'Konfirmasi password baru tidak cocok.'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 400);
     }
+
+    // Periksa apakah password lama cocok
+    if (!Hash::check($request->current_password, $user->password)) {
+        return response()->json(['error' => 'Password lama salah.'], 400);
+    }
+
+    // Update password baru
+    $user->update(['password' => Hash::make($request->new_password)]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Password berhasil diperbarui'
+    ], 200);
+}
 
     // update
     public function update(Request $request, $id)
     {
         $user = User::find($id);
+
         if (!$user) {
-            return response()->json(['error' => 'Pengguna tidak ditemukan'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan'
+            ], 404);
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255|unique:users,name,' . $id,
-            'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'password' => [
-                'nullable',
-                'string',
-                'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).+$/',
-                'confirmed'
-            ],
-            'roles' => 'required|array'
-        ], [
-            'name.unique' => 'Nama sudah digunakan, silakan gunakan nama lain.',
-            'email.unique' => 'Email sudah terdaftar, silakan gunakan email lain.',
-            'password.min' => 'Password minimal harus 8 karakter.',
-            'password.regex' => 'Password harus mengandung minimal 1 huruf besar, 1 huruf kecil, dan 1 simbol.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.'
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'phone_number' => 'nullable|string|max:15|unique:users,phone_number,' . $user->id,
+            'avatar' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 400);
         }
 
-        $user->update($request->except(['password']));
-        if ($request->filled('password')) {
-            $user->update(['password' => Hash::make($request->password)]);
+        try {
+            // Update profil kecuali avatar
+            $user->update($request->except('avatar'));
+
+            // Jika ada avatar yang diunggah
+            if ($request->hasFile('avatar')) {
+                $image = $request->file('avatar');
+                $imageData = base64_encode(file_get_contents($image->getRealPath()));
+
+                // Tambahkan prefix agar bisa langsung ditampilkan
+                $mimeType = $image->getMimeType();
+                $base64Image = "data:$mimeType;base64,$imageData";
+
+                $user->update(['avatar' => $base64Image]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profil berhasil diperbarui',
+                'user' => $user
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui profil',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $user->syncRoles($request->roles);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pengguna berhasil diperbarui',
-            'data' => $user
-        ], 200);
     }
     // Menghapus pengguna
     public function destroy($id)
