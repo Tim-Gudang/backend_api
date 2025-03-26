@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
+    /**e
      * Run the migrations.
      */
     public function up(): void
@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('barang_id')->constrained('barangs')->onDelete('cascade');
             $table->foreignId('id_gudang')->constrained('gudangs',)->onDelete('cascade');
-            $table->integer('stok')->default(0);
+            $table->integer('stok_tersedia')->default(0);
+            $table->integer('stok_dipinjam')->default(0);
+            $table->integer('stok_maintenance')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

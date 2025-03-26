@@ -16,7 +16,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->foreignId('barang_id')->constrained('barangs')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('bk_tanggal');
+            $table->datetime('bk_tanggal');
             $table->string('bk_jumlah');
 
             $table->timestamps();
