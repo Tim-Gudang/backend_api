@@ -26,8 +26,6 @@ class UserController extends Controller implements HasMiddleware
             new Middleware('permission:delete_user', only: ['destroy']),
         ];
     }
-
-
     // daftar pengguna
     public function index()
     {
@@ -62,8 +60,6 @@ class UserController extends Controller implements HasMiddleware
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
-
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -144,21 +140,14 @@ class UserController extends Controller implements HasMiddleware
                 'errors' => $validator->errors()
             ], 400);
         }
-
         try {
-            // Update profil kecuali avatar
             $user->update($request->except('avatar'));
-
-            // Jika ada avatar yang diunggah
-            if ($request->hasFile('avatar')) {
-                $image = $request->file('avatar');
-                $imageData = base64_encode(file_get_contents($image->getRealPath()));
-
-                // Tambahkan prefix agar bisa langsung ditampilkan
-                $mimeType = $image->getMimeType();
-                $base64Image = "data:$mimeType;base64,$imageData";
-
-                $user->update(['avatar' => $base64Image]);
+            if (!empty($request->avatar)) {
+                if ($user->avatar && $user->avatar !== 'default_avatar.png') {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+                $avatarPath = uploadBase64Image($request->avatar, 'img/profil');
+                $user->update(['avatar' => $avatarPath]);
             }
 
             return response()->json([
@@ -167,6 +156,7 @@ class UserController extends Controller implements HasMiddleware
                 'user' => $user
             ], 200);
         } catch (\Exception $e) {
+            \Log::error("Error updating user: " . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat memperbarui profil',
@@ -174,6 +164,7 @@ class UserController extends Controller implements HasMiddleware
             ], 500);
         }
     }
+
     // Menghapus pengguna
     public function destroy($id)
     {

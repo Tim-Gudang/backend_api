@@ -11,7 +11,7 @@ class Barang extends Model
     protected $fillable = [
         'jenisbarang_id',
         'satuan_id',
-        'jenis_barang',
+        'klasifikasi_barang',
         'barang_kode',
         'barang_nama',
         'barang_slug',
@@ -25,12 +25,17 @@ class Barang extends Model
 
     public function jenisBarang()
     {
-        return $this->belongsTo(Barang::class, 'jenisbarang_id', 'jenisbarang_id');
+        return $this->belongsTo(JenisBarang::class);
     }
+
 
     public function satuan()
     {
-        return $this->belongsTo(Satuan::class, 'satuan_id', 'satuan_id');
+        return $this->belongsTo(Satuan::class);
+    }
+
+    public function gudangs(){
+        return $this->belongsToMany(Gudang::class, 'barang_gudangs')->withPivot('stok_tersedia', 'stok_dipinjam', 'stok_maintenance');
     }
 
     protected static function boot()
@@ -42,7 +47,5 @@ class Barang extends Model
                 $barang->barang_kode = 'BRG-' . rand(100000, 999999);
             }
         });
-
     }
-
 }
