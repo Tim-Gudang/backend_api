@@ -18,11 +18,6 @@ class JenisBarang extends Model
     ];
 
 
-    protected  $casts = [
-        'created_at' => 'datetime:Y-m-d H:m:s',
-        'updated_at' => 'datetime:Y-m-d H:m:s',
-        'deleted_at' => 'datetime:Y-m-d H:m:s',
-    ];
     public function barangs()
     {
         return $this->hasMany(Barang::class);
@@ -32,4 +27,10 @@ class JenisBarang extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    protected  $casts = [
+        'created_at' => 'datetime:Y-m-d H:m:s',
+        'updated_at' => 'datetime:Y-m-d H:m:s',
+        'deleted_at' => 'datetime:Y-m-d H:m:s',
+    ];
 }

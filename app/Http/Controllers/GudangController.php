@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Gudang;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class GudangController extends Controller
 {
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_gudang', only: ['index', 'show']),
+            new Middleware('permission:create_gudang', only: ['store']),
+            new Middleware('permission:update_gudang', only: ['update']),
+            new Middleware('permission:delete_gudang', only: ['destroy']),
+        ];
+    }
     public function index()
     {
         $gudang = Gudang::paginate(10);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JenisBarang;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +15,17 @@ class JenisBarangController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_jenis_barang', only: ['index', 'show']),
+            new Middleware('permission:create_jenis_barang', only: ['store']),
+            new Middleware('permission:update_jenis_barang', only: ['update']),
+            new Middleware('permission:delete_jenis_barang', only: ['destroy']),
+        ];
+    }
     public function index()
     {
         $jenisBarang = JenisBarang::with('user')->paginate(10);

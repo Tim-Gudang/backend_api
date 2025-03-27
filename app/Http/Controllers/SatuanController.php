@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Satuan;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class SatuanController extends Controller
 {
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_satuan', only: ['index', 'show']),
+            new Middleware('permission:create_satuan', only: ['store']),
+            new Middleware('permission:update_satuan', only: ['update']),
+            new Middleware('permission:delete_satuan', only: ['destroy']),
+        ];
+    }
     public function index()
     {
         $satuans = Satuan::with('user')->paginate(10);
