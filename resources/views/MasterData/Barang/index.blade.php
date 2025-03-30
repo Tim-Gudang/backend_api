@@ -31,18 +31,60 @@
            @include('layouts.page_header')
             <!-- /page header -->
 
+            <!-- Centered modal -->
+	<div id="modal_centered" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Tambah Data</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body">
+					<h6 class="fw-semibold">Text in a modal</h6>
+					<p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+
+					<hr>
+
+					<h6 class="fw-semibold">Another paragraph</h6>
+					<p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+					<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /centered modal -->
 
 
 
 
 <!-- Content area -->
 <div class="content">
-    <button type="button" class="btn btn-primary btn-labeled btn-labeled-start mb-2">
+    <button type="button" class="btn btn-primary btn-labeled btn-labeled-start mb-2" data-bs-toggle="modal" data-bs-target="#modal_centered">
         <span class="btn-labeled-icon bg-black bg-opacity-20">
             <i class="icon-database-add"></i>
         </span>
         Tambah
     </button>
+    <button type="button" id="scan-btn" class="btn btn-primary btn-labeled btn-labeled-start mb-2">
+        <span class="btn-labeled-icon bg-black bg-opacity-20">
+            <i class="ph-scan ph-2x rounded"></i>
+        </span>
+        Scan
+    </button>
+               <!-- Container Scanner -->
+               <div id="scanner-container" style="display: none;">
+                <button id="close-btn">✖</button>
+                <video id="preview"></video>
+                <input type="text" id="qrcode-result" class="form-control mt-2" readonly>
+            </div>
+
+
     <!-- Basic initialization -->
     <div class="card">
         <div class="card-header">

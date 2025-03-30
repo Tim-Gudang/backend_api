@@ -365,35 +365,7 @@
 <!-- /demo config -->
 
 </body>
-<script>
-    let scanner = new Instascan.Scanner({
-        video: document.getElementById('preview')
-    });
 
-    scanner.addListener('scan', function(content) {
-        document.getElementById('qrcode-result').value = content;
-        alert("QR Code Terdeteksi: " + content);
-    });
-
-    document.getElementById('scan-btn').addEventListener('click', function() {
-        document.getElementById('scanner-container').style.display = 'flex';
-
-        Instascan.Camera.getCameras().then(function(cameras) {
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]); // Gunakan kamera pertama
-            } else {
-                alert('Tidak ada kamera yang ditemukan.');
-            }
-        }).catch(function(e) {
-            console.error(e);
-        });
-    });
-
-    document.getElementById('close-btn').addEventListener('click', function() {
-        document.getElementById('scanner-container').style.display = 'none';
-        scanner.stop(); // Matikan kamera saat ditutup
-    });
-</script>
 
 
 </html>
