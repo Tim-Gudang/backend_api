@@ -89,11 +89,9 @@ class BarangController extends Controller implements HasMiddleware
         $data['barang_slug'] = Str::slug($request->barang_nama);
 
         if (!empty($request->barang_gambar)) {
-            // Hapus gambar lama jika ada dan bukan gambar default
             if ($barang->barang_gambar && $barang->barang_gambar !== 'default_image.png') {
                 Storage::disk('public')->delete($barang->barang_gambar);
             }
-
             // Unggah gambar baru ke direktori img/barang
             $data['barang_gambar'] = uploadBase64Image($request->barang_gambar, 'img/barang');
         }
@@ -130,7 +128,6 @@ class BarangController extends Controller implements HasMiddleware
                 'errors' => $validator->errors()
             ], 422);
         }
-
         $data['barang_slug'] = Str::slug($request->barang_nama);
         $data['user_id'] = Auth::id();
 
@@ -139,7 +136,6 @@ class BarangController extends Controller implements HasMiddleware
         } else {
             $data['barang_gambar'] = 'default_image.png';
         }
-
         $barang = Barang::create($data);
 
         return response()->json([
@@ -147,8 +143,6 @@ class BarangController extends Controller implements HasMiddleware
             'data' => $barang
         ], 201);
     }
-
-
 
     public function destroy($id)
     {
@@ -230,12 +224,9 @@ class BarangController extends Controller implements HasMiddleware
                 QrCode::format('png')->size(300)->errorCorrection('H')->generate($qrContent)
             );
 
-            // Buka baris baru setiap 2 QR Code
             if ($counter % 2 == 0) {
                 $qrCodesHtml .= "<tr>";
             }
-
-            // tempat menambahkan tataletak qr_code
             $qrCodesHtml .= "
                 <td style='border: 1px solid #000; padding: 10px;border:none'>
                     <img src='{$qrCodeBase64}' width='150' height='150'>

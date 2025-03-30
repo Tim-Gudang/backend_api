@@ -1,391 +1,399 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!-- Main navbar -->
+@include('layouts.navbar')
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Limitless - Responsive Web Application Kit by Eugene Kopyov</title>
-
-    <!-- Global stylesheets -->
-    <link href="{{ asset('template/assets/fonts/inter/inter.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('template/assets/icons/phosphor/styles.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('assets/css/ltr/all.min.css') }}" id="stylesheet" rel="stylesheet" type="text/css">
-    <!-- /global stylesheets -->
-
-    <!-- Core JS files -->
-    <script src="{{ asset('template/assets/demo/demo_configurator.js') }}"></script>
-    <script src="{{ asset('template/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
-    <!-- /core JS files -->
-
-    <!-- Theme JS files -->
-    <script src="{{ asset('template/assets/js/vendor/visualization/d3/d3.min.js') }}"></script>
-    <script src="{{ asset('template/assets/js/vendor/visualization/d3/d3_tooltip.js') }}"></script>
-
-    <script src="{{ asset('assets/js/app.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/pages/dashboard.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/streamgraph.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/sparklines.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/lines.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/areas.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/donuts.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/bars.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/progress.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/heatmaps.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/charts/pages/dashboard/pies.js') }}"></script>
-    <script src="{{ asset('template/assets/demo/data/dashboard/bullets.json') }}"></script>
-    <!-- /theme JS files -->
-
-</head>
-
-<body>
-
-    <!-- Main navbar -->
-    @include('layouts.navbar')
-
-    <!-- /main navbar -->
+<!-- /main navbar -->
 
 
-    <!-- Page content -->
-    <div class="page-content">
+<!-- Page content -->
+<div class="page-content">
 
-        <!-- Main sidebar -->
-        <div class="sidebar sidebar-dark sidebar-main sidebar-expand-lg">
-
-            <!-- Sidebar content -->
-            @include('layouts.sidebar')
-
-            <!-- /sidebar content -->
-
-        </div>
-        <!-- /main sidebar -->
+    @include('layouts.sidebar')
+    <!-- /main sidebar -->
 
 
-        <!-- Main content -->
-        <div class="content-wrapper">
+    <!-- Main content -->
+    <div class="content-wrapper">
 
-            <!-- Inner content -->
-            <div class="content-inner">
+        <!-- Inner content -->
+        <div class="content-inner">
 
-                <!-- Page header -->
-                <div class="page-header page-header-light shadow">
-                    <div class="page-header-content d-lg-flex">
-                        <div class="d-flex">
-                            <h4 class="page-title mb-0">
-                                Home - <span class="fw-normal">Dashboard</span>
-                            </h4>
+            <!-- Page header -->
+            <div class="page-header page-header-light shadow">
+                <div class="page-header-content d-lg-flex">
+                    <div class="d-flex">
+                        <h4 class="page-title mb-0">
+                            Home - <span class="fw-normal">Dashboard</span>
+                        </h4>
 
-                            <a href="#page_header"
-                                class="btn btn-light align-self-center collapsed d-lg-none border-transparent rounded-pill p-0 ms-auto"
-                                data-bs-toggle="collapse">
-                                <i class="ph-caret-down collapsible-indicator ph-sm m-1"></i>
-                            </a>
-                        </div>
 
-                        <div class="collapse d-lg-block my-lg-auto ms-lg-auto" id="page_header">
-                            <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3">
-                                <div class="dropdown w-100 w-sm-auto">
-                                    <a href="#"
-                                        class="d-flex align-items-center text-body lh-1 dropdown-toggle py-sm-2"
-                                        data-bs-toggle="dropdown" data-bs-display="static">
-                                        <img src="{{ asset('template/assets/images/brands/tesla.svg') }}"
-                                            class="w-32px h-32px me-2" alt="">
-                                        <div class="me-auto me-lg-1">
-                                            <div class="fs-sm text-muted mb-1">Customer</div>
-                                            <div class="fw-semibold">Tesla Motors Inc</div>
-                                        </div>
-                                    </a>
+                    </div>
 
-                                    <div
-                                        class="dropdown-menu dropdown-menu-lg-end w-100 w-lg-auto wmin-300 wmin-sm-350 pt-0">
-                                        <div class="d-flex align-items-center p-3">
-                                            <h6 class="fw-semibold mb-0">Customers</h6>
-                                            <a href="#" class="ms-auto">
-                                                View all
-                                                <i class="ph-arrow-circle-right ms-1"></i>
-                                            </a>
-                                        </div>
-                                        <a href="#" class="dropdown-item active py-2">
-                                            <img src="{{ asset('template/assets/images/brands/tesla.svg') }}"
-                                                class="w-32px h-32px me-2" alt="">
-                                            <div>
-                                                <div class="fw-semibold">Tesla Motors Inc</div>
-                                                <div class="fs-sm text-muted">42 users</div>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="dropdown-item py-2">
-                                            <img src="{{ asset('template/assets/images/brands/debijenkorf.svg') }}"
-                                                class="w-32px h-32px me-2" alt="">
-                                            <div>
-                                                <div class="fw-semibold">De Bijenkorf</div>
-                                                <div class="fs-sm text-muted">49 users</div>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="dropdown-item py-2">
-                                            <img src="{{ asset('template/assets/images/brands/klm.svg') }}"
-                                                class="w-32px h-32px me-2" alt="">
-                                            <div>
-                                                <div class="fw-semibold">Royal Dutch Airlines</div>
-                                                <div class="fs-sm text-muted">18 users</div>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="dropdown-item py-2">
-                                            <img src="{{ asset('template/assets/images/brands/shell.svg') }}"
-                                                class="w-32px h-32px me-2" alt="">
-                                            <div>
-                                                <div class="fw-semibold">Royal Dutch Shell</div>
-                                                <div class="fs-sm text-muted">54 users</div>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="dropdown-item py-2">
-                                            <img src="{{ asset('template/assets/images/brands/bp.svg') }}"
-                                                class="w-32px h-32px me-2" alt="">
-                                            <div>
-                                                <div class="fw-semibold">BP plc</div>
-                                                <div class="fs-sm text-muted">23 users</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
 
-                                <div class="vr d-none d-sm-block flex-shrink-0 my-2 mx-3"></div>
+                </div>
 
-                                <div class="d-inline-flex mt-3 mt-sm-0">
-                                    <a href="#" class="status-indicator-container ms-1">
-                                        <img src="{{ asset('template/assets/images/demo/users/face24.jpg') }}"
-                                            class="w-32px h-32px rounded-pill" alt="">
-                                        <span class="status-indicator bg-warning"></span>
-                                    </a>
-                                    <a href="#" class="status-indicator-container ms-1">
-                                        <img src="{{ asset('template/assets/images/demo/users/face1.jpg') }}"
-                                            class="w-32px h-32px rounded-pill" alt="">
-                                        <span class="status-indicator bg-success"></span>
-                                    </a>
-                                    <a href="#" class="status-indicator-container ms-1">
-                                        <img src="{{ asset('template/assets/images/demo/users/face3.jpg') }}"
-                                            class="w-32px h-32px rounded-pill" alt="">
-                                        <span class="status-indicator bg-danger"></span>
-                                    </a>
-                                    <a href="#"
-                                        class="btn btn-outline-primary btn-icon w-32px h-32px rounded-pill ms-3">
-                                        <i class="ph-plus"></i>
-                                    </a>
-                                </div>
-                            </div>
+                <div class="page-header-content d-lg-flex border-top">
+                    <div class="d-flex">
+                        <div class="breadcrumb py-2">
+                            <a href="index.html" class="breadcrumb-item"><i class="ph-house"></i></a>
+                            <a href="#" class="breadcrumb-item">Home</a>
+                            <span class="breadcrumb-item active">Dashboard</span>
                         </div>
                     </div>
 
-                    <div class="page-header-content d-lg-flex border-top">
-                        <div class="d-flex">
-                            <div class="breadcrumb py-2">
-                                <a href="index.html" class="breadcrumb-item"><i class="ph-house"></i></a>
-                                <a href="#" class="breadcrumb-item">Home</a>
-                                <span class="breadcrumb-item active">Dashboard</span>
-                            </div>
+                    <div class="collapse d-lg-block ms-lg-auto" id="breadcrumb_elements">
 
-                            <a href="#breadcrumb_elements"
-                                class="btn btn-light align-self-center collapsed d-lg-none border-transparent rounded-pill p-0 ms-auto"
-                                data-bs-toggle="collapse">
-                                <i class="ph-caret-down collapsible-indicator ph-sm m-1"></i>
-                            </a>
-                        </div>
-
-                        <div class="collapse d-lg-block ms-lg-auto" id="breadcrumb_elements">
-                            <div class="d-lg-flex mb-2 mb-lg-0">
-                                <a href="#" class="d-flex align-items-center text-body py-2">
-                                    <i class="ph-lifebuoy me-2"></i>
-                                    Support
-                                </a>
-
-                                <div class="dropdown ms-lg-3">
-                                    <a href="#" class="d-flex align-items-center text-body dropdown-toggle py-2"
-                                        data-bs-toggle="dropdown">
-                                        <i class="ph-gear me-2"></i>
-                                        <span class="flex-1">Settings</span>
-                                    </a>
-
-                                    <div class="dropdown-menu dropdown-menu-end w-100 w-lg-auto">
-                                        <a href="#" class="dropdown-item">
-                                            <i class="ph-shield-warning me-2"></i>
-                                            Account security
-                                        </a>
-                                        <a href="#" class="dropdown-item">
-                                            <i class="ph-chart-bar me-2"></i>
-                                            Analytics
-                                        </a>
-                                        <a href="#" class="dropdown-item">
-                                            <i class="ph-lock-key me-2"></i>
-                                            Privacy
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a href="#" class="dropdown-item">
-                                            <i class="ph-gear me-2"></i>
-                                            All settings
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-                <!-- /page header -->
+            </div>
+            <!-- /page header -->
 
 
-                <!-- Content area -->
-                <div class="content">
+            <!-- Content area -->
+            <div class="content">
 
-                    <!-- Main charts -->
-                    <div class="row">
-                        <div class="col-xl-7">
+                <!-- Main charts -->
 
-                            <!-- Traffic sources -->
-                            <div class="card">
-                                <div class="card-header d-flex align-items-center">
-                                    <h5 class="mb-0">Traffic sources</h5>
-                                    <div class="ms-auto">
-                                        <label class="form-check form-switch form-check-reverse">
-                                            <input type="checkbox" class="form-check-input" checked>
-                                            <span class="form-check-label">Live update</span>
-                                        </label>
-                                    </div>
+                <!-- /main charts -->
+
+
+                <!-- Dashboard content -->
+                <div class="row">
+                    <!-- Quick stats boxes -->
+                    <div class="col-lg-3">
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $barangs }}</h3>
                                 </div>
 
-                                <div class="card-body pb-0">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                                <a href="#"
-                                                    class="bg-success bg-opacity-10 text-success lh-1 rounded-pill p-2 me-3">
-                                                    <i class="ph-plus"></i>
-                                                </a>
-                                                <div>
-                                                    <div class="fw-semibold">New visitors</div>
-                                                    <span class="text-muted">2,349 avg</span>
-                                                </div>
-                                            </div>
-                                            <div class="w-75 mx-auto mb-3" id="new-visitors"></div>
-                                        </div>
-
-                                        <div class="col-sm-4">
-                                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                                <a href="#"
-                                                    class="bg-warning bg-opacity-10 text-warning lh-1 rounded-pill p-2 me-3">
-                                                    <i class="ph-clock"></i>
-                                                </a>
-                                                <div>
-                                                    <div class="fw-semibold">New sessions</div>
-                                                    <span class="text-muted">08:20 avg</span>
-                                                </div>
-                                            </div>
-                                            <div class="w-75 mx-auto mb-3" id="new-sessions"></div>
-                                        </div>
-
-                                        <div class="col-sm-4">
-                                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                                <a href="#"
-                                                    class="bg-indigo bg-opacity-10 text-indigo lh-1 rounded-pill p-2 me-3">
-                                                    <i class="ph-users-three"></i>
-                                                </a>
-                                                <div>
-                                                    <div class="fw-semibold">Total online</div>
-                                                    <span class="text-muted">5,378 avg</span>
-                                                </div>
-                                            </div>
-                                            <div class="w-75 mx-auto mb-3" id="total-online"></div>
-                                        </div>
-                                    </div>
+                                <div>
+                                    Barang
                                 </div>
-
-                                <div class="chart position-relative" id="traffic-sources"></div>
                             </div>
-                            <!-- /traffic sources -->
 
                         </div>
+                        <!-- /members online -->
 
-                        <div class="col-xl-5">
+                    </div>
 
-                            <!-- Sales stats -->
-                            <div class="card">
-                                <div class="card-header d-sm-flex align-items-sm-center py-sm-0">
-                                    <h5 class="py-sm-2 my-sm-1">Sales statistics</h5>
-                                    <div class="mt-2 mt-sm-0 ms-sm-auto">
-                                        <select class="form-select" id="select_date">
-                                            <option value="val1">June, 29 - July, 5</option>
-                                            <option value="val2">June, 22 - June 28</option>
-                                            <option value="val3" selected>June, 15 - June, 21</option>
-                                            <option value="val4">June, 8 - June, 14</option>
-                                        </select>
-                                    </div>
+
+                    <div class="col-lg-3">
+
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $jenisbarangs }}</h3>
                                 </div>
 
-                                <div class="card-body pb-0">
-                                    <div class="row text-center">
-                                        <div class="col-4">
-                                            <div class="mb-3">
-                                                <h5 class="mb-0">5,689</h5>
-                                                <div class="text-muted fs-sm">new orders</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-4">
-                                            <div class="mb-3">
-                                                <h5 class="mb-0">32,568</h5>
-                                                <div class="text-muted fs-sm">this month</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-4">
-                                            <div class="mb-3">
-                                                <h5 class="mb-0">$23,464</h5>
-                                                <div class="text-muted fs-sm">expected profit</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div>
+                                    Jenis Barang
                                 </div>
-
-                                <div class="chart mb-2" id="app_sales"></div>
-                                <div class="chart" id="monthly-sales-stats"></div>
                             </div>
-                            <!-- /sales stats -->
+                        </div>
+                        <!-- /members online -->
 
+                    </div>
+
+                    <div class="col-lg-3">
+
+
+                        <!-- Current server load -->
+                        <div class="card bg-pink text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <h3 class="mb-10">0</h3>
+                                    <div class="dropdown d-inline-flex ms-auto">
+                                        <a href="#"
+                                            class="text-white d-inline-flex align-items-center dropdown-toggle"
+                                            data-bs-toggle="dropdown">
+                                            <i class="ph-gear"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a href="#" class="dropdown-item">
+                                                <i class="ph-chart-line me-2"></i>
+                                                Statistics
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    Transaksi
+                                </div>
+                            </div>
+
+                            <div class="rounded-bottom overflow-hidden" id="server-load"></div>
+                        </div>
+                        <!-- /current server load -->
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $satuans }}</h3>
+                                </div>
+
+                                <div>
+                                    Satuan
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /members online -->
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $users }}</h3>
+                                </div>
+
+                                <div>
+                                    User
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /members online -->
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $gudangs }}</h3>
+                                </div>
+
+                                <div>
+                                    Gudang
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- /main charts -->
+                    <div class="col-lg-3">
 
-                    <!-- Dashboard content -->
-                    @include('layouts.dashboard_content')
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $gudangs }}</h3>
+                                </div>
 
+                                <div>
+                                    Status
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $gudangs }}</h3>
+                                </div>
+
+                                <div>
+                                    Jenis Transaksi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- /dashboard content -->
 
                 </div>
-                <!-- /content area -->
 
-                <!-- Footer -->
-                @include('layouts.footer')
+                <div class="row">
+                    <div class="col-xl-8">
 
-                <!-- /footer -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Transaksi</h5>
+                            </div>
 
+                            <div class="card-body">
+                                <div class="fullcalendar-event-colors"></div>
+                            </div>
+                            <!-- /event colors -->
+
+
+
+
+                        </div>
+                    </div>
+                    <div class="col-xl-4">
+
+
+                        <!-- /progress counters -->
+
+
+
+
+                        <!-- Daily financials -->
+                        <div class="card">
+                            <div class="card-header d-flex align-items-center">
+                                <h5 class="mb-0">Daily financials</h5>
+                                <div class="ms-auto">
+                                    <label class="form-check form-switch form-check-reverse">
+                                        <input type="checkbox" class="form-check-input" id="realtime" checked>
+                                        <span class="form-check-label">Realtime</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="chart mb-3" id="bullets"></div>
+
+                                <div class="d-flex mb-3">
+                                    <div class="me-3">
+                                        <div class="bg-pink bg-opacity-10 text-pink lh-1 rounded-pill p-2">
+                                            <i class="ph-chart-line"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-fill">
+                                        Stats for July, 6: <span class="fw-semibold">1938</span> orders, $4220 revenue
+                                        <div class="text-muted fs-sm">2 hours ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-3">
+                                    <div class="me-3">
+                                        <div class="bg-success bg-opacity-10 text-success lh-1 rounded-pill p-2">
+                                            <i class="ph-check"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-fill">
+                                        Invoices <a href="#">#4732</a> and <a href="#">#4734</a> have been
+                                        paid
+                                        <div class="text-muted fs-sm">Dec 18, 18:36</div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-3">
+                                    <div class="me-3">
+                                        <div class="bg-primary bg-opacity-10 text-primary lh-1 rounded-pill p-2">
+                                            <i class="ph-users"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-fill">
+                                        Affiliate commission for June has been paid
+                                        <div class="text-muted fs-sm">36 minutes ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-3">
+                                    <div class="me-3">
+                                        <div class="bg-warning bg-opacity-10 text-warning lh-1 rounded-pill p-2">
+                                            <i class="ph-arrow-counter-clockwise"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-fill">
+                                        Order <a href="#">#37745</a> from July, 1st has been refunded
+                                        <div class="text-muted fs-sm">4 minutes ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="bg-teal bg-opacity-10 text-teal lh-1 rounded-pill p-2">
+                                            <i class="ph-arrow-bend-double-up-right"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-fill">
+                                        Invoice <a href="#">#4769</a> has been sent to <a href="#">Robert
+                                            Smith</a>
+                                        <div class="text-muted fs-sm">Dec 12, 05:46</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /daily financials -->
+
+                    </div>
+                </div>
             </div>
-            <!-- /inner content -->
+
+            <!-- Tombol Scan -->
+            <button id="scan-btn" class="btn btn-primary d-flex  btn-position btn-circle">
+                <i class="ph-scan ph-2x rounded"></i>
+            </button>
+
+            <!-- Container Scanner -->
+            <div id="scanner-container" style="display: none;">
+                <button id="close-btn">✖</button>
+                <video id="preview"></video>
+                <input type="text" id="qrcode-result" class="form-control mt-2" readonly>
+            </div>
+
+
+            @include('layouts.footer')
 
         </div>
-        <!-- /main content -->
+        <!-- /inner content -->
 
     </div>
-    <!-- /page content -->
+    <!-- /main content -->
+
+</div>
+
+<!-- /page content -->
 
 
-    <!-- Notifications -->
-    @include('layouts.components.notifications')
+<!-- Notifications -->
+@include('layouts.components.notifications')
 
-    <!-- /notifications -->
+<!-- /notifications -->
 
 
-    <!-- Demo config -->
-    @include('layouts.components.demo_config')
+<!-- Demo config -->
+@include('layouts.components.demo_config')
 
-    <!-- /demo config -->
+<!-- /demo config -->
 
 </body>
+<script>
+    let scanner = new Instascan.Scanner({
+        video: document.getElementById('preview')
+    });
+
+    scanner.addListener('scan', function(content) {
+        document.getElementById('qrcode-result').value = content;
+        alert("QR Code Terdeteksi: " + content);
+    });
+
+    document.getElementById('scan-btn').addEventListener('click', function() {
+        document.getElementById('scanner-container').style.display = 'flex';
+
+        Instascan.Camera.getCameras().then(function(cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]); // Gunakan kamera pertama
+            } else {
+                alert('Tidak ada kamera yang ditemukan.');
+            }
+        }).catch(function(e) {
+            console.error(e);
+        });
+    });
+
+    document.getElementById('close-btn').addEventListener('click', function() {
+        document.getElementById('scanner-container').style.display = 'none';
+        scanner.stop(); // Matikan kamera saat ditutup
+    });
+</script>
+
 
 </html>

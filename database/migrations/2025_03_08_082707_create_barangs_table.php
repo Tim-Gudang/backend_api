@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\JenisBarang;
+use App\Models\Satuan;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,6 +25,17 @@ return new class extends Migration {
         });
     }
 
+
+    public function jenisBarang()
+    {
+        return $this->belongsTo(JenisBarang::class, 'jenisbarang_id');
+    }
+
+    // Relasi ke Satuan
+    public function satuan()
+    {
+        return $this->belongsTo(Satuan::class, 'satuan_id');
+    }
     public function down(): void
     {
         Schema::dropIfExists('barangs');
