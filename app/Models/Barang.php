@@ -11,7 +11,7 @@ class Barang extends Model
     protected $fillable = [
         'jenisbarang_id',
         'satuan_id',
-        'klasifikasi_barang',
+        'barangcategory_id',
         'barang_kode',
         'barang_nama',
         'barang_slug',
@@ -28,13 +28,18 @@ class Barang extends Model
         return $this->belongsTo(JenisBarang::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(BarangCategory::class);
+    }
 
     public function satuan()
     {
         return $this->belongsTo(Satuan::class);
     }
 
-    public function gudangs(){
+    public function gudangs()
+    {
         return $this->belongsToMany(Gudang::class, 'barang_gudangs')->withPivot('stok_tersedia', 'stok_dipinjam', 'stok_maintenance');
     }
 
@@ -54,5 +59,4 @@ class Barang extends Model
         'updated_at' => 'datetime:Y-m-d H:m:s',
         'deleted_at' => 'datetime:Y-m-d H:m:s',
     ];
-
 }

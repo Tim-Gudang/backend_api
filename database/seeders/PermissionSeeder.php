@@ -48,25 +48,25 @@ class PermissionSeeder extends Seeder
             'view_jenis_barang',
             'delete_jenis_barang',
 
-            'create_jenis_transaction',
-            'update_jenis_transaction',
-            'view_jenis_transaction',
-            'delete_jenis_transaction',
+            'create_transaction_type',
+            'update_transaction_type',
+            'view_transaction_type',
+            'delete_transaction_type',
 
             'create_transaction',
             'update_transaction',
             'view_transaction',
             'delete_transaction',
 
-            // 'create_barang_masuk',
-            // 'update_barang_masuk',
-            // 'view_barang_masuk',
-            // 'delete_barang_masuk',
+            'create_category_barang',
+            'update_category_barang',
+            'view_category_barang',
+            'delete_category_barang',
 
-            // 'create_barang_keluar',
-            // 'update_barang_keluar',
-            // 'view_barang_keluar',
-            // 'delete_barang_keluar'
+            'create_barang_status',
+            'update_barang_status',
+            'view_barang_status',
+            'delete_barang_status',
 
         ];
 

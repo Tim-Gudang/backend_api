@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('jenisbarang_id')->nullable()->constrained('jenis_barangs')->onDelete('cascade');
             $table->foreignId('satuan_id')->nullable()->constrained('satuans')->onDelete('cascade');
-            $table->enum('klasifikasi_barang', ['sekali_pakai', 'berulang']);
+            $table->foreignId('barangcategory_id')->nullable()->constrained('barang_categories')->onDelete('cascade');
             $table->string('barang_kode')->unique();
             $table->string('barang_nama');
             $table->string('barang_slug')->unique();

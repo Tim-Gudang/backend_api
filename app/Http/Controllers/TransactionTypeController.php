@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\TransactionType;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class TransactionTypeController extends Controller
 {
+    public static function middleware(): array
+    {
+        return [
+            'auth:api',
+            new Middleware('permission:view_jenis_barang', only: ['index', 'show']),
+            new Middleware('permission:create_transaction_type', only: ['store']),
+            new Middleware('permission:update_transaction_type', only: ['update']),
+            new Middleware('permission:delete_transaction_type', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -22,20 +33,12 @@ class TransactionTypeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255|unique:transaction_types,nama',
+            'name' => 'required|string|max:255|unique:transaction_types,name',
         ]);
 
         if ($validator->fails()) {
@@ -46,8 +49,8 @@ class TransactionTypeController extends Controller
         }
 
         $transactionType = TransactionType::create([
-            'nama' => $request->nama,
-            'slug' => Str::slug($request->nama)
+            'name' => $request->name,
+            'slug' => Str::slug($request->name)
         ]);
 
         return response()->json([
@@ -72,13 +75,6 @@ class TransactionTypeController extends Controller
         ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TransactionType $transactionTypes)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -91,7 +87,7 @@ class TransactionTypeController extends Controller
             return response()->json(['message' => 'Transaction type tidak ditemukan'], 404);
         }
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255|unique:transaction_types,nama,' . $id,
+            'name' => 'required|string|max:255|unique:transaction_types,name,' . $id,
         ]);
 
         if ($validator->fails()) {
@@ -102,8 +98,8 @@ class TransactionTypeController extends Controller
         }
 
         $transactionType->update([
-            'nama' => $request->nama,
-            'slug' => Str::slug($request->nama)
+            'name' => $request->name,
+            'slug' => Str::slug($request->name)
         ]);
 
         return response()->json([

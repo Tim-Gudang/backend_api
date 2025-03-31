@@ -45,7 +45,7 @@ class BarangController extends Controller implements HasMiddleware
         $validator = Validator::make($data, [
             'jenisbarang_id' => 'nullable|exists:jenis_barangs,id',
             'satuan_id' => 'nullable|exists:satuans,id',
-            'klasifikasi_barang' => 'nullable|in:sekali_pakai,berulang',
+            'barangcategory_id' => 'nullable|exists:barang_categories,id',
             'barang_nama' => 'required|string|max:255|unique:barangs,barang_nama',
             'barang_harga' => 'required|numeric|min:0',
             'barang_gambar' => 'nullable|string',
@@ -109,7 +109,7 @@ class BarangController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'jenisbarang_id' => 'nullable|exists:jenis_barangs,id',
             'satuan_id' => 'nullable|exists:satuans,id',
-            'klasifikasi_barang' => 'nullable|in:sekali_pakai,berulang',
+            'barangcategory_id' => 'nullable|exists:barang_categor,id',
             'barang_nama' => 'required|string|max:255|unique:barangs,barang_nama,' . $id,
             'barang_harga' => 'required|numeric|min:0',
             'barang_gambar' => 'nullable|string',
@@ -125,7 +125,7 @@ class BarangController extends Controller implements HasMiddleware
         $data = $request->only([
             'jenisbarang_id',
             'satuan_id',
-            'klasifikasi_barang',
+            'barangcategory_id',
             'barang_nama',
             'barang_harga'
         ]);

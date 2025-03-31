@@ -7,26 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class TransactionType extends Model
+class BarangStatus extends Model
 {
     use HasFactory, SoftDeletes;
-
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
 
     public static function boot()
     {
         parent::boot();
-        static::creating(function ($transactionType) {
-            $transactionType->slug = Str::slug($transactionType->name);
+        self::creating(function ($model) {
+            $model->slug = Str::slug($model->name);
         });
-        static::updating(function ($transactionType) {
-            $transactionType->slug = Str::slug($transactionType->name);
+        self::updating(function ($model) {
+            $model->slug = Str::slug($model->name);
+        });
+        self::deleting(function ($model) {
+            $model->deleted_at = now();
         });
     }
-    protected function transactions()
-    {
-        return $this->hasMany(Transaction::class);
-    }
+
 
     protected  $casts = [
         'created_at' => 'datetime:Y-m-d H:m:s',

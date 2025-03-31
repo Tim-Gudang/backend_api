@@ -12,20 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_types', function (Blueprint $table) {
+        Schema::create('barang_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
             $table->softDeletes();
             $table->timestamps();
         });
-
-        DB::table('transaction_types')->insert([
-            ['name' => 'Barang Masuk', 'slug' => 'barang_masuk'],
-            ['name' => 'Barang Keluar', 'slug' => 'barang_keluar'],
-            ['name' => 'Peminjaman', 'slug' => 'peminjaman'],
-            ['name' => 'Pengembalian', 'slug' => 'pengembalian'],
-        ]);
     }
 
     /**
@@ -33,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaction_types');
+        Schema::dropIfExists('barang_statuses');
     }
 };

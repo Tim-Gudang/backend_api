@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\BarangCategoryController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangStatusController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\PermissionController;
@@ -36,6 +38,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('gudangs', GudangController::class);
 
     Route::apiResource('satuans', SatuanController::class);
+
+    Route::apiResource('barang-categories', BarangCategoryController::class);
+
+    Route::apiResource('barang-statuses', BarangStatusController::class);
 
     Route::apiResource('transaction-types', TransactionTypeController::class);
 

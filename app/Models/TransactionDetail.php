@@ -10,21 +10,30 @@ class TransactionDetail extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable =[
+    protected $fillable = [
         'transaction_id',
+        'barang_status_id',
         'barang_id',
         'gudang_id',
         'quantity',
         'keterangan',
     ];
+    public function statusBarang()
+    {
+        return $this->belongsTo(BarangStatus::class);
+    }
 
-    public function transaction(){
+
+    public function transaction()
+    {
         return $this->belongsTo(Transaction::class);
     }
-    public function barang(){
+    public function barang()
+    {
         return $this->belongsTo(Barang::class);
     }
-    public function gudang(){
+    public function gudang()
+    {
         return $this->belongsTo(Gudang::class);
     }
 }

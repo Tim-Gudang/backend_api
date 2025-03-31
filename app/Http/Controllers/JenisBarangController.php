@@ -60,7 +60,10 @@ class JenisBarangController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400);
+                return response()->json([
+                    'message' => 'Validasi gagal!',
+                    'error' => $validator->errors()
+                ], 422);
             }
 
             $validatedData = $validator->validated();
