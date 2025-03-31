@@ -20,9 +20,8 @@ class JenisBarang extends Model
 
     public function barangs()
     {
-        return $this->hasMany(Barang::class);
+        return $this->hasMany(Barang::class, 'jenisbarang_id');
     }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

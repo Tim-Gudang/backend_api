@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
+        "guzzlehttp/guzzle": "^7.9",
         "khanamiryan/qrcode-detector-decoder": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/passport": "^12.0",

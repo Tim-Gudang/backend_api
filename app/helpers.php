@@ -4,14 +4,15 @@
     use Melihovv\Base64ImageDecoder\Base64ImageDecoder;
     use Illuminate\Support\Str;
 
-
-    function uploadBase64Image($base64Image)
+    function uploadBase64Image($base64Image, $subdirectory = 'img/barang')
     {
-        $decoder = new Base64ImageDecoder($base64Image, $allowedFormats = ['jpeg', 'png', 'jpg']);
+        $decoder = new Base64ImageDecoder($base64Image, ['jpeg', 'png', 'jpg']);
         $decodedContent = $decoder->getDecodedContent();
         $format = $decoder->getFormat();
-        $image = 'img/barang/' . Str::random(10) . '.' . $format;
-        Storage::disk('public')->put($image, $decodedContent);
+        $imageName = Str::random(10) . '.' . $format;
+        $imagePath = $subdirectory . '/' . $imageName;
 
-        return $image;
+        Storage::disk('public')->put($imagePath, $decodedContent);
+
+        return $imagePath;
     }

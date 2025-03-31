@@ -25,17 +25,18 @@ class Barang extends Model
 
     public function jenisBarang()
     {
-        return $this->belongsTo(JenisBarang::class);
+        return $this->belongsTo(JenisBarang::class, 'jenisbarang_id');
     }
-
     public function category()
     {
         return $this->belongsTo(BarangCategory::class);
     }
 
+
+    // Relasi ke Satuan
     public function satuan()
     {
-        return $this->belongsTo(Satuan::class);
+        return $this->belongsTo(Satuan::class, 'satuan_id');
     }
 
     public function gudangs()
