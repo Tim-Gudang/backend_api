@@ -22,7 +22,7 @@ class BarangController extends Controller implements HasMiddleware
     {
         return [
             'auth:api',
-            new Middleware('permission:view_barang', only: ['index']),
+            // new Middleware('permission:view_barang', only: ['index']),
             new Middleware('permission:create_barang', only: ['store']),
             new Middleware('permission:update_barang', only: ['update']),
             new Middleware('permission:delete_barang', only: ['destroy']),
