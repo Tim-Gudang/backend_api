@@ -13,18 +13,16 @@ Route::get('/scan-result', function (Request $request) {
 });
 
 
-Route::get('/login',function () {
+Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
 route::get('/user_profile', function () {
     return view('profile.user_profile');
-
 })->name('user_profile');
 
 route::get('/user_profile', function () {
     return view('profile.user_profile');
 })->name('user_profile');
 
-    Route::resource('barangs', FrontendBarangController::class);
-
+Route::resource('barangs', FrontendBarangController::class);

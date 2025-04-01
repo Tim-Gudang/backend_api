@@ -1,4 +1,4 @@
- {{-- <!-- Dashboard content -->
+ <!-- Dashboard content -->
  <div class="row">
     <div class="col-xl-8">
 
@@ -2017,4 +2017,4 @@
 
     </div>
 </div>
-<!-- /dashboard content --> --}}
+<!-- /dashboard content -->

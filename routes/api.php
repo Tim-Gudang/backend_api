@@ -9,6 +9,7 @@ use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SatuanController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodesimage']);
     Route::get('/export-pdf', [BarangController::class, 'generateAllQRCodes']);
     Route::get('/export-pdf/{id}', [BarangController::class, 'generateQRCodeById']);
+
+    Route::apiResource('transactions', TransactionController::class);
 });
 
 Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])

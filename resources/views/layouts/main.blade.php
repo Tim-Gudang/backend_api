@@ -189,26 +189,37 @@
                         <div class="card bg-teal text-white">
                             <div class="card-body">
                                 <div class="d-flex">
-                                    <h3 class="mb-10">{{ $gudangs }}</h3>
+                                    <h3 class="mb-10">{{ $barangStatuses }}</h3>
                                 </div>
 
                                 <div>
-                                    Status
+                                    Barang Status
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-3">
-
                         <!-- Members online -->
                         <div class="card bg-teal text-white">
                             <div class="card-body">
                                 <div class="d-flex">
-                                    <h3 class="mb-10">{{ $gudangs }}</h3>
+                                    <h3 class="mb-10">{{ $transactionTypes }}</h3>
                                 </div>
-
                                 <div>
                                     Jenis Transaksi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <!-- Members online -->
+                        <div class="card bg-teal text-white">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="mb-10">{{ $barangCategories }}</h3>
+                                </div>
+                                <div>
+                                    Barang Kategori
                                 </div>
                             </div>
                         </div>
@@ -239,8 +250,6 @@
 
 
                         <!-- /progress counters -->
-
-
 
 
                         <!-- Daily financials -->
@@ -325,6 +334,8 @@
 
                     </div>
                 </div>
+
+
             </div>
 
             <!-- Tombol Scan -->
