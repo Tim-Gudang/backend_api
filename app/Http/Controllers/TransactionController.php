@@ -29,6 +29,7 @@ class TransactionController extends Controller
         if ($request->filled('transaction_date_start') && $request->filled('transaction_date_end')) {
             $query->whereBetween('transaction_date', [$request->transaction_date_start, $request->transaction_date_end]);
         }
+
         $transactions = $query->paginate(10);
         return response()->json(['response_code' => '200', 'status' => 'success', 'message' => 'Data transaksi ditemukan', 'data' => $transactions]);
     }
@@ -159,5 +160,55 @@ class TransactionController extends Controller
                 'data' => $transaction,
             ], 201);
         });
+    }
+
+    public function show($id)
+    {
+        $transaction = Transaction::with(['user', 'transactionType', 'transactionDetails', 'transactionDetails.barang', 'transactionDetails.gudang'])
+            ->where('id', $id)
+            ->first();
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaksi dengan ID ' . $id . 'tidak ditemukan!'], 404);
+        }
+
+        return response()->json(['response_code' => '200', 'status' => 'success', 'message' => 'Data transaksi ditemukan', 'data' => $transaction]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $transaction = Transaction::find($id);
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'sometimes|exists:users,id',
+            'transaction_type_id' => 'sometimes|exists:transaction_types,id',
+            'transaction_code' => 'sometimes|string',
+            'transaction_date' => 'sometimes|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Invalid input', 'errors' => $validator->errors()], 422);
+        }
+
+        $transaction->update($request->only(['user_id', 'transaction_type_id', 'transaction_code', 'transaction_date']));
+
+        return response()->json(['message' => 'Transaksi berhasil diperbarui', 'data' => $transaction]);
+    }
+
+    public function destroy($id)
+    {
+        $transaction = Transaction::find($id);
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        // Hapus detail transaksi sebelum menghapus transaksi utama
+        TransactionDetail::where('transaction_id', $transaction->id)->delete();
+        $transaction->delete();
+
+        return response()->json(['message' => 'Transaksi berhasil dihapus']);
     }
 }
