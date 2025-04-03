@@ -16,7 +16,7 @@ class TransactionDetail extends Model
         'barang_id',
         'gudang_id',
         'quantity',
-        'keterangan',
+        'tanggal_kembali'
     ];
     public function statusBarang()
     {

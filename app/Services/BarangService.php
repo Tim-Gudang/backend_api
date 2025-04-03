@@ -71,7 +71,7 @@ class BarangService
     {
         $barang = $this->barangRepository->findById($id);
         if (!$barang) {
-            return null;
+            throw new \Exception('Barang tidak ditemukan.');
         }
 
         // Cek apakah nama barang sudah digunakan oleh barang lain

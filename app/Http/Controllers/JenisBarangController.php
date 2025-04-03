@@ -65,7 +65,10 @@ class JenisBarangController extends Controller
 
     public function destroy($id)
     {
-        $this->jenisBarangService->delete($id);
+        $deleted = $this->jenisBarangService->delete($id);
+        if (!$deleted) {
+            return response()->json(['message' => 'Jenis Barang tidak ditemukan.'], 404);
+        }
         return response()->json(['success' => true, 'message' => 'Jenis barang berhasil dihapus!']);
     }
 

@@ -74,24 +74,24 @@ class TransactionTypeController extends Controller
 
     public function update(Request $request, $id)
     {
-        try {
-            $transactionType = $this->transactionTypeService->update($id, $request->all());
+        // try {
+        $transactionType = $this->transactionTypeService->update($id, $request->all());
 
-            return response()->json([
-                'message' => 'Tipe transaksi berhasil diubah!',
-                'data' => new TransactionTypeResource($transactionType)
-            ], 200);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal!',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal mengubah tipe transaksi',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Tipe transaksi berhasil diubah!',
+            'data' => new TransactionTypeResource($transactionType)
+        ], 200);
+        // } catch (ValidationException $e) {
+        //     return response()->json([
+        //         'message' => 'Validasi gagal!',
+        //         'errors' => $e->errors()
+        //     ], 422);
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => 'Gagal mengubah tipe transaksi',
+        //         'error' => $e->getMessage()
+        //     ], 500);
+        // }
     }
 
     public function destroy($id)

@@ -54,9 +54,7 @@ class PermissionSeeder extends Seeder
             'delete_transaction_type',
 
             'create_transaction',
-            'update_transaction',
             'view_transaction',
-            'delete_transaction',
 
             'create_category_barang',
             'update_category_barang',

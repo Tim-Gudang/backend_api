@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\TransactionType;
 use App\Repositories\BarangCategoryRepository;
 use App\Repositories\TransactionTypeRepository;
 use Illuminate\Support\Facades\Validator;
@@ -49,6 +50,18 @@ class TransactionTypeService
         $transactionType = $this->transactionTypeRepository->findById($id);
         if (!$transactionType) {
             throw new \Exception('Tipe Transaksi tidak ditemukan.');
+        }
+
+        // Cek apakah nama barang sudah digunakan oleh barang lain
+        $existingTransactionType = TransactionType::where('name', $data['name'])
+            ->where('id', '!=', $id)
+            ->exists();
+
+        if ($existingTransactionType) {
+            throw new \Illuminate\Validation\ValidationException(
+                Validator::make([], []), // Buat validator kosong
+                response()->json(['errors' => ['name' => 'Tipe transaksi ini sudah digunakan!']], 422)
+            );
         }
 
         $validator = Validator::make($data, [
