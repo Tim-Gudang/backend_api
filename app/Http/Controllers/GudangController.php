@@ -38,7 +38,10 @@ class GudangController extends Controller
     {
         try {
             $gudang = $this->gudangService->create($request->all());
-            return new GudangResource($gudang);
+            return response()->json([
+                'message' => 'Data gudang berhasil dibuat',
+                'data' => new GudangResource($gudang)
+            ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'errors' => $e->errors()

@@ -76,7 +76,8 @@ class JenisBarangService
         return DB::transaction(function () use ($id) {
             $jenisBarang = $this->jenisBarangRepository->getById($id);
             if (!$jenisBarang) {
-                throw new \Exception('Jenis barang tidak ditemukan');
+                // throw new \Exception('Jenis barang tidak ditemukan');\
+                return null;
             }
             $this->jenisBarangRepository->delete($jenisBarang);
             return $jenisBarang;
