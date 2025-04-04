@@ -7,6 +7,7 @@ use App\Http\Controllers\BarangStatusController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\TransactionController;
@@ -43,8 +44,6 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('barang-categories', BarangCategoryController::class);
 
-    Route::apiResource('barang-statuses', BarangStatusController::class);
-
     Route::apiResource('transaction-types', TransactionTypeController::class);
 
     Route::apiResource('jenis-barangs', JenisBarangController::class);
@@ -52,12 +51,21 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('jenis-barang/{id}/force-delete', [JenisBarangController::class, 'forceDelete']);
 
     //barang
+    Route::apiResource('barangs', BarangController::class);
     Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateQRCodeimage']);
     Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodesimage']);
     Route::get('/export-pdf', [BarangController::class, 'generateAllQRCodes']);
     Route::get('/export-pdf/{id}', [BarangController::class, 'generateQRCodeById']);
 
     Route::apiResource('transactions', TransactionController::class);
+
+    Route::apiResource('barangs', BarangController::class);
+
+    Route::get('/barang/qrcode/save/{id}', [QRCodeController::class, 'generateQRCodeImage']);
+    Route::get('/generate-qrcodes', [QRCodeController::class, 'generateAllQRCodesImage']);
+
+    Route::get('/export-pdf/{id}', [QRCodeController::class, 'generateQRCodePDF']);
+    Route::get('/export-pdf', [QRCodeController::class, 'generateAllQRCodesPDF']);
 });
 
 Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])

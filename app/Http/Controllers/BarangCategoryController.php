@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BarangCategory;
+use App\Http\Resources\BarangCategoryResource;
+use App\Services\BarangCategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class BarangCategoryController extends Controller
 {
+    protected $barangCategoryService;
+
+    public function __construct(BarangCategoryService $barangCategoryService)
+    {
+        $this->barangCategoryService = $barangCategoryService;
+    }
+
     public static function middleware(): array
     {
         return [
@@ -20,48 +27,40 @@ class BarangCategoryController extends Controller
             new Middleware('permission:delete_category_barang', only: ['destroy']),
         ];
     }
+
     public function index()
     {
-        $barangCategory = BarangCategory::all();
-
+        $barangCategories = $this->barangCategoryService->getAll();
         return response()->json([
-            'message' => 'Data Kategori barang berhasil diambil',
-            'data' => $barangCategory,
+            'message' => 'Data kategori barang berhasil diambil',
+            'data' => BarangCategoryResource::collection($barangCategories),
         ], 200);
     }
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
-        $validator = Validator::make($data, [
-            'name' => 'required|string|max:255|unique:barang_categories,name',
-        ], [
-            'name.required' => 'Nama kategori barang wajib diisi',
-            'name.unique' => 'Nama kategori barang sudah digunakan',
-        ]);
-
-        if ($validator->fails()) {
+        try {
+            $barangCategory = $this->barangCategoryService->create($request->all());
+            return response()->json([
+                'message' => 'Kategori barang berhasil ditambahkan!',
+                'data' => new BarangCategoryResource($barangCategory)
+            ], 201);
+        } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validasi gagal!',
-                'errors' => $validator->errors()
+                'errors' => $e->errors()
             ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menambah kategori barang',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $barangCategory = BarangCategory::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name)
-        ]);
-
-        return response()->json([
-            'message' => 'Kategori barang berhasil ditambahkan!',
-            'data' => $barangCategory
-        ], 201);
     }
 
     public function show($id)
     {
-        $barangCategory = BarangCategory::find($id);
+        $barangCategory = $this->barangCategoryService->getById($id);
 
         if (!$barangCategory) {
             return response()->json(['message' => 'Kategori barang tidak ditemukan'], 404);
@@ -69,52 +68,44 @@ class BarangCategoryController extends Controller
 
         return response()->json([
             'message' => 'Kategori barang berhasil diambil',
-            'data' => $barangCategory,
+            'data' => new BarangCategoryResource($barangCategory),
         ], 200);
     }
 
     public function update(Request $request, $id)
     {
-        $barangCategory = BarangCategory::find($id);
+        try {
+            $barangCategory = $this->barangCategoryService->update($id, $request->all());
 
-        if (!$barangCategory) {
-            return response()->json(['message' => 'Kategori barang tidak ditemukan'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => "required|string|max:255|unique:barang_categories,name,{$barangCategory->id}",
-        ]);
-
-        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Kategori barang berhasil diubah!',
+                'data' => new BarangCategoryResource($barangCategory)
+            ], 200);
+        } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validasi gagal!',
-                'errors' => $validator->errors()
+                'errors' => $e->errors()
             ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal mengubah kategori barang',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $barangCategory->update([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name)
-        ]);
-
-        return response()->json([
-            'message' => 'Kategori varang berhasil diubah!',
-            'data' => $barangCategory
-        ], 200);
     }
 
     public function destroy($id)
     {
-        $barangCategory = BarangCategory::find($id);
-
-        if (!$barangCategory) {
-            return response()->json(['message' => 'Kategori barang tidak ditemukan'], 404);
+        try {
+            $this->barangCategoryService->delete($id);
+            return response()->json([
+                'message' => 'Kategori barang berhasil dihapus!',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus kategori barang',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $barangCategory->delete();
-
-        return response()->json([
-            'message' => 'Kategori barang berhasil dihapus!',
-        ], 204);
     }
 }

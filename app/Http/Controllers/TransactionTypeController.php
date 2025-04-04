@@ -2,127 +2,110 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TransactionType;
+use App\Http\Resources\TransactionTypeResource;
+use App\Services\TransactionTypeService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+
+use Illuminate\Validation\ValidationException;
 
 class TransactionTypeController extends Controller
 {
+    protected $transactionTypeService;
+
+    public function __construct(TransactionTypeService $transactionTypeService)
+    {
+        $this->transactionTypeService = $transactionTypeService;
+    }
+
     public static function middleware(): array
     {
         return [
             'auth:api',
-            new Middleware('permission:view_jenis_barang', only: ['index', 'show']),
+            new Middleware('permission:view_transaction_type', only: ['index', 'show']),
             new Middleware('permission:create_transaction_type', only: ['store']),
             new Middleware('permission:update_transaction_type', only: ['update']),
             new Middleware('permission:delete_transaction_type', only: ['destroy']),
         ];
     }
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $transactionTypes = TransactionType::all();
+        $transactionTypes = $this->transactionTypeService->getAll();
         return response()->json([
-            'message' => 'Daftar transaction types berhasil diambil!',
-            'data' => $transactionTypes
+            'message' => 'Tipe transaksi berhasil diambil',
+            'data' => TransactionTypeResource::collection($transactionTypes),
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:transaction_types,name',
-        ]);
-
-        if ($validator->fails()) {
+        try {
+            $transactionType = $this->transactionTypeService->create($request->all());
+            return response()->json([
+                'message' => 'Tipe transaksi berhasil ditambahkan!',
+                'data' => new TransactionTypeResource($transactionType)
+            ], 201);
+        } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validasi gagal!',
-                'errors' => $validator->errors()
+                'errors' => $e->errors()
             ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menambah tipe transaksi',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $transactionType = TransactionType::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name)
-        ]);
-
-        return response()->json([
-            'message' => 'Transaction type berhasil ditambahkan!',
-            'data' => $transactionType
-        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
-        $transactionType = TransactionType::find($id);
+        $transactionType = $this->transactionTypeService->getById($id);
+
         if (!$transactionType) {
-            return response()->json(['message' => 'Transaction type tidak ditemukan'], 404);
+            return response()->json(['message' => 'Tipe transaksi tidak ditemukan'], 404);
         }
 
         return response()->json([
-            'message' => 'Transaction type berhasil diambil!',
-            'data' => $transactionType
+            'message' => 'Tipe transaksi berhasil diambil',
+            'data' => new TransactionTypeResource($transactionType),
         ], 200);
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        $transactionType = TransactionType::find($id);
-
-        if (!$transactionType) {
-            return response()->json(['message' => 'Transaction type tidak ditemukan'], 404);
-        }
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:transaction_types,name,' . $id,
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validasi gagal!',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $transactionType->update([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name)
-        ]);
+        // try {
+        $transactionType = $this->transactionTypeService->update($id, $request->all());
 
         return response()->json([
-            'message' => 'Transaction type berhasil diupdate!',
-            'data' => $transactionType
+            'message' => 'Tipe transaksi berhasil diubah!',
+            'data' => new TransactionTypeResource($transactionType)
         ], 200);
+        // } catch (ValidationException $e) {
+        //     return response()->json([
+        //         'message' => 'Validasi gagal!',
+        //         'errors' => $e->errors()
+        //     ], 422);
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => 'Gagal mengubah tipe transaksi',
+        //         'error' => $e->getMessage()
+        //     ], 500);
+        // }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        $transactionType = TransactionType::find($id);
-
-        if (!$transactionType) {
-            return response()->json(['message' => 'Transaction type tidak ditemukan'], 404);
+        try {
+            $this->transactionTypeService->delete($id);
+            return response()->json([
+                'message' => 'Tipe transaksi berhasil dihapus!',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus tipe transaksi',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $transactionType->delete();
-
-        return response()->json([
-            'message' => 'Transaction type berhasil dihapus!',
-        ], 200);
     }
 }

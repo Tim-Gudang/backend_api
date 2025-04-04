@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gudang;
+use App\Http\Resources\GudangResource;
+use App\Services\GudangService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class GudangController extends Controller
 {
+    protected $gudangService;
+
+    public function __construct(GudangService $gudangService)
+    {
+        $this->gudangService = $gudangService;
+    }
+
     public static function middleware(): array
     {
         return [
@@ -21,168 +27,66 @@ class GudangController extends Controller
             new Middleware('permission:delete_gudang', only: ['destroy']),
         ];
     }
+
     public function index()
     {
-        $gudang = Gudang::paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar gudang berhasil diambil',
-            'data' => $gudang
-        ], 200);
+        $gudang = $this->gudangService->getAll();
+        return GudangResource::collection($gudang);
     }
 
     public function store(Request $request)
     {
         try {
-            DB::beginTransaction();
-
-            $data = $request->all();
-
-            $validator = Validator::make($data, [
-                'name' => ['required', 'string', 'max:255', 'unique:gudangs,name'],
-                'description' => ['nullable', 'string'],
-            ], [
-                'name.required' => 'Nama gudang wajib diisi.',
-                'name.unique' => 'Nama gudang sudah digunakan.',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400);
-            }
-
-            $validatedData = $validator->validated();
-            $validatedData['slug'] = Str::slug($validatedData['name']);
-
-            $gudang = Gudang::create($validatedData);
-
-            DB::commit();
+            $gudang = $this->gudangService->create($request->all());
             return response()->json([
-                'success' => true,
-                'message' => 'Gudang berhasil ditambahkan!',
-                'data' => $gudang
-            ], 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Gagal menambah gudang', 'message' => $e->getMessage()], 500);
+                'message' => 'Data gudang berhasil dibuat',
+                'data' => new GudangResource($gudang)
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors()
+            ], 400);
         }
     }
 
     public function show($id)
     {
-        $gudang = Gudang::find($id);
+        $gudang = $this->gudangService->getById($id);
 
-        if (!$gudang) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gudang tidak ditemukan'
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $gudang
-        ], 200);
+        return $gudang ? new GudangResource($gudang) : response()->json(['message' => 'Gudang tidak ditemukan'], 404);
     }
 
     public function update(Request $request, $id)
     {
-        $gudang = Gudang::find($id);
-
-        if (!$gudang) {
-            return response()->json([
-                'success' => false,
+        try {
+            $updated = $this->gudangService->update($id, $request->all());
+            return $updated ? response()->json(['message' => 'Gudang berhasil diperbarui']) : response()->json([
                 'message' => 'Gudang tidak ditemukan'
             ], 404);
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $data = $request->all();
-            $validator = Validator::make($data, [
-                'name' => ['required', 'string', 'max:255'],
-                'description' => ['nullable', 'string'],
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400);
-            }
-
-            $validatedData = $validator->validated();
-
-            if (isset($validatedData['name'])) {
-                $validatedData['slug'] = Str::slug($validatedData['name']);
-            }
-
-            $gudang->update($validatedData);
-
-            DB::commit();
-
+        } catch (ValidationException $e) {
             return response()->json([
-                'success' => true,
-                'message' => 'Gudang berhasil diperbarui!',
-                'data' => $gudang
-            ], 200);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat memperbarui gudang',
-                'error' => $e->getMessage()
-            ], 500);
+                'errors' => $e->errors()
+            ], 400);
         }
     }
-
     public function destroy($id)
     {
-        $gudang = Gudang::find($id);
-
-        if (!$gudang) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gudang tidak ditemukan'
-            ], 404);
-        }
-
-        $gudang->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Gudang berhasil dihapus!'
-        ], 200);
+        $deleted = $this->gudangService->delete($id);
+        return $deleted ? response()->json(['message' => 'Gudang berhasil dihapus']) : response()->json(['message' => 'Gudang tidak ditemukan'], 404);
     }
 
     // Mengembalikan gudang yang telah dihapus
     public function restore($id)
     {
-        $gudang = Gudang::onlyTrashed()->find($id);
-        if (!$gudang) {
-            return response()->json(['success' => false, 'message' => 'Gudang tidak ditemukan atau belum dihapus'], 404);
-        }
-
-        $gudang->restore();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Gudang berhasil dikembalikan',
-            'data' => $gudang
-        ], 200);
+        $gudang = $this->gudangService->restore($id);
+        return $gudang ? new GudangResource($gudang) : response()->json(['message' => 'Gudang tidak ditemukan'], 404);
     }
 
     // Menghapus gudang secara permanen
     public function forceDelete($id)
     {
-        $gudang = Gudang::onlyTrashed()->find($id);
-        if (!$gudang) {
-            return response()->json(['success' => false, 'message' => 'Gudang tidak ditemukan atau belum dihapus'], 404);
-        }
-
-        $gudang->forceDelete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Gudang berhasil dihapus permanen'
-        ], 200);
+        return $this->gudangService->forceDelete($id)
+            ? response()->json(['message' => 'Gudang berhasil dihapus permanen'])
+            : response()->json(['message' => 'Gudang tidak ditemukan'], 404);
     }
 }

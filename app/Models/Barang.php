@@ -32,7 +32,6 @@ class Barang extends Model
         return $this->belongsTo(BarangCategory::class);
     }
 
-
     // Relasi ke Satuan
     public function satuan()
     {
