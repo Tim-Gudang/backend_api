@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -48,8 +50,8 @@ class UserController extends Controller implements HasMiddleware
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).+$/',
                 'confirmed'
             ],
-            'roles' => 'required|array|exists:roles,name'
-        ], [
+            'roles' => 'required|array'
+            ], [
             'name.unique' => 'Nama sudah digunakan, silakan gunakan nama lain.',
             'email.unique' => 'Email sudah terdaftar, silakan gunakan email lain.',
             'password.min' => 'Password minimal harus 8 karakter.',
@@ -60,10 +62,15 @@ class UserController extends Controller implements HasMiddleware
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
+        $role = Role::where('name', $request->roles[0])->first();
+        if (!$role) {
+            return response()->json(['error' => 'Role not found'], 400);
+        }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => $role->id
         ]);
 
         $user->assignRole($request->roles);
@@ -156,7 +163,7 @@ class UserController extends Controller implements HasMiddleware
                 'user' => $user
             ], 200);
         } catch (\Exception $e) {
-            \Log::error("Error updating user: " . $e->getMessage());
+            Log::error("Error updating user: " . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat memperbarui profil',

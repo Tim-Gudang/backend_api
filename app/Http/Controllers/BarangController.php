@@ -30,7 +30,7 @@ class BarangController extends Controller implements HasMiddleware
     }
     public function index()
     {
-        $barang = Barang::all();
+        $barang = Barang::with('gudangs')->get();
         return response()->json([
             'message' => 'Daftar barang berhasil diambil!',
             'data' => $barang
@@ -49,6 +49,8 @@ class BarangController extends Controller implements HasMiddleware
             'barang_nama' => 'required|string|max:255|unique:barangs,barang_nama',
             'barang_harga' => 'required|numeric|min:0',
             'barang_gambar' => 'nullable|string',
+            'gudang_id' => 'required|exists:gudangs,id',
+            'stok_tersedia' => 'required|numeric|min:0',
         ], [
             'barang_nama.unique' => 'Barang dengan nama ini sudah ada di database!',
             'barang_nama.required' => 'Nama barang wajib diisi!',
@@ -65,19 +67,20 @@ class BarangController extends Controller implements HasMiddleware
 
         $data['barang_slug'] = Str::slug($request->barang_nama);
         $data['user_id'] = Auth::id();
-
-        if (!empty($request->barang_gambar)) {
-            $data['barang_gambar'] = uploadBase64Image($request->barang_gambar);
-        } else {
-            $data['barang_gambar'] = 'default_image.png';
-        }
+        $data['barang_gambar'] = $request->barang_gambar ? uploadBase64Image($request->barang_gambar) : 'default_image.png';
 
 
         $barang = Barang::create($data);
 
+        $barang->gudangs()->attach($request->gudang_id, [
+            'stok_tersedia' => $request->stok_tersedia,
+            'stok_dipinjam' => 0,
+            'stok_maintenance' => 0,
+        ]);
+
         return response()->json([
             'message' => 'Barang berhasil ditambahkan!',
-            'data' => $barang
+            'data' => Barang::with('gudangs')->find($barang->id)
         ], 201);
     }
 
@@ -109,10 +112,12 @@ class BarangController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'jenisbarang_id' => 'nullable|exists:jenis_barangs,id',
             'satuan_id' => 'nullable|exists:satuans,id',
-            'barangcategory_id' => 'nullable|exists:barang_categor,id',
+            'barangcategory_id' => 'nullable|exists:barang_categories,id',
             'barang_nama' => 'required|string|max:255|unique:barangs,barang_nama,' . $id,
             'barang_harga' => 'required|numeric|min:0',
             'barang_gambar' => 'nullable|string',
+            'gudang_id' => 'required|exists:gudangs,id',
+            'stok_tersedia' => 'sometimes|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -141,6 +146,14 @@ class BarangController extends Controller implements HasMiddleware
         }
 
         $barang->update($data);
+
+        $barang->gudangs()->syncWithoutDetaching([
+            $request->gudang_id => [
+                'stok_tersedia' => $request->stok_tersedia,
+                'stok_dipinjam' => 0,
+                'stok_maintenance' => 0,
+            ]
+        ]);
 
         return response()->json([
             'message' => 'Barang berhasil diperbarui!',
