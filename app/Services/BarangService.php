@@ -13,22 +13,18 @@ use Illuminate\Validation\ValidationException;
 class BarangService
 {
     protected $barangRepository;
-
     public function __construct(BarangRepository $barangRepository)
     {
         $this->barangRepository = $barangRepository;
     }
-
     public function getAllBarang()
     {
         return $this->barangRepository->getAll();
     }
-
     public function getBarangById($id)
     {
         return $this->barangRepository->findById($id);
     }
-
     public function createBarang(array $data)
     {
         $this->validateCreateData($data);
@@ -54,9 +50,8 @@ class BarangService
             $this->attachGudangStok($barang, $data);
         }
 
-        return $barang;
+       return $barang;
     }
-
     public function updateBarang($id, array $data)
     {
         $barang = $this->barangRepository->findById($id);

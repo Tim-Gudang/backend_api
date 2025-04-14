@@ -52,11 +52,6 @@ Route::middleware(['auth:api'])->group(function () {
 
     //barang
     Route::apiResource('barangs', BarangController::class);
-    Route::get('/barang/qrcode/save/{id}', [BarangController::class, 'generateQRCodeimage']);
-    Route::get('/generate-qrcodes', [BarangController::class, 'generateAllQRCodesimage']);
-    Route::get('/export-pdf', [BarangController::class, 'generateAllQRCodes']);
-    Route::get('/export-pdf/{id}', [BarangController::class, 'generateQRCodeById']);
-
     Route::apiResource('transactions', TransactionController::class);
 
     Route::apiResource('barangs', BarangController::class);
@@ -64,8 +59,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/barang/qrcode/save/{id}', [QRCodeController::class, 'generateQRCodeImage']);
     Route::get('/generate-qrcodes', [QRCodeController::class, 'generateAllQRCodesImage']);
 
-    Route::get('/export-pdf/{id}', [QRCodeController::class, 'generateQRCodePDF']);
+    Route::get('/barangs/export-pdf/{id}', [QRCodeController::class, 'generateQRCodePDF']);
     Route::get('/export-pdf', [QRCodeController::class, 'generateAllQRCodesPDF']);
+
 });
 
 Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])
