@@ -38,12 +38,50 @@ class PermissionController extends Controller
             return response()->json(['message' => "Permission {$request->permission} dicabut dari {$request->role}"]);
         }
     }
-    public function index()
+    public function index(Request $request)
     {
-        $permissions = Permission::all();
+        // Validasi agar query param 'role' wajib ada
+        $request->validate([
+            'role' => 'required|string'
+        ]);
+
+        // Ambil dari query param, BUKAN dari user login
+        $roleName = strtolower($request->role);
+
+        // Ambil role berdasarkan nama
+        $role = \Spatie\Permission\Models\Role::whereRaw('LOWER(name) = ?', [$roleName])->first();
+
+        if (!$role) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Role tidak ditemukan: ' . $request->role
+            ], 404);
+        }
+
+        // Ambil semua permission
+        $permissions = \Spatie\Permission\Models\Permission::all();
+
+        // Ambil permission yang dimiliki role ini dari tabel pivot
+        $permissionIds = DB::table('role_has_permissions')
+            ->where('role_id', $role->id)
+            ->pluck('permission_id')
+            ->toArray();
+
+        // Buat output permission + status true/false
+        $result = $permissions->map(function ($permission) use ($permissionIds) {
+            return [
+                'id' => $permission->id,
+                'name' => $permission->name,
+                'status' => in_array($permission->id, $permissionIds)
+            ];
+        });
+
+        // Return JSON
         return response()->json([
             'success' => true,
-            'data' => $permissions
-        ], 200);
+            'role' => $role->name,
+            'permissions' => $result
+        ]);
     }
+
 }

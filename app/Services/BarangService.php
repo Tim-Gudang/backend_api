@@ -13,18 +13,22 @@ use Illuminate\Validation\ValidationException;
 class BarangService
 {
     protected $barangRepository;
+
     public function __construct(BarangRepository $barangRepository)
     {
         $this->barangRepository = $barangRepository;
     }
+
     public function getAllBarang()
     {
         return $this->barangRepository->getAll();
     }
+
     public function getBarangById($id)
     {
         return $this->barangRepository->findById($id);
     }
+
     public function createBarang(array $data)
     {
         $this->validateCreateData($data);
@@ -46,12 +50,13 @@ class BarangService
 
         $barang = $this->barangRepository->create($data);
 
-        if (!empty($data['gudang_id'])) {
-            $this->attachGudangStok($barang, $data);
-        }
+        // if (!empty($data['gudang_id'])) {
+        //     $this->attachGudangStok($barang, $data);
+        // }
 
-       return $barang;
+        return $barang;
     }
+
     public function updateBarang($id, array $data)
     {
         $barang = $this->barangRepository->findById($id);
@@ -66,11 +71,13 @@ class BarangService
 
         if (!empty($data['barang_gambar'])) {
             $data['barang_gambar'] = $this->replaceImage($barang->barang_gambar, $data['barang_gambar']);
+        } else {
+            unset($data['barang_gambar']); // biar nggak override kalau kosong
         }
 
         $this->barangRepository->update($barang, $data);
 
-        $this->attachGudangStok($barang, $data);
+        // $this->attachGudangStok($barang, $data);
 
         return $barang;
     }
@@ -101,9 +108,6 @@ class BarangService
             'barangcategory_id' => 'nullable|exists:barang_categories,id',
             'barang_nama' => 'required|string|max:255',
             'barang_harga' => 'required|numeric|min:0',
-            'barang_gambar' => 'nullable|string',
-            'gudang_id' => 'nullable|exists:gudangs,id',
-            'stok_tersedia' => 'required|numeric|min:0',
         ])->validate();
     }
 
@@ -112,8 +116,6 @@ class BarangService
         Validator::make($data, [
             'barang_nama' => 'required|string|max:255',
             'barang_harga' => 'required|numeric|min:0',
-            'gudang_id' => 'required|exists:gudangs,id',
-            'stok_tersedia' => 'sometimes|numeric|min:0',
         ])->validate();
     }
 
@@ -137,11 +139,13 @@ class BarangService
 
         if (!empty($data['barang_gambar'])) {
             $updateData['barang_gambar'] = $this->handleImageUpload($data['barang_gambar']);
+        } else {
+            unset($data['barang_gambar']);
         }
 
         $this->barangRepository->update($barang, $updateData);
 
-        $this->attachGudangStok($barang, $data);
+        // $this->attachGudangStok($barang, $data);
 
         return $barang;
     }
@@ -188,14 +192,14 @@ class BarangService
         return uploadBase64Image($newBase64);
     }
 
-    private function attachGudangStok(Barang $barang, array $data)
-    {
-        $barang->gudangs()->syncWithoutDetaching([
-            $data['gudang_id'] => [
-                'stok_tersedia' => $data['stok_tersedia'] ?? 0,
-                'stok_dipinjam' => 0,
-                'stok_maintenance' => 0,
-            ]
-        ]);
-    }
+    // private function attachGudangStok(Barang $barang, array $data)
+    // {
+    //     $barang->gudangs()->syncWithoutDetaching([
+    //         $data['gudang_id'] => [
+    //             'stok_tersedia' => $data['stok_tersedia'] ?? 0,
+    //             'stok_dipinjam' => 0,
+    //             'stok_maintenance' => 0,
+    //         ]
+    //     ]);
+    // }
 }

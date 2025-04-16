@@ -61,11 +61,6 @@ class PermissionSeeder extends Seeder
             'view_category_barang',
             'delete_category_barang',
 
-            'create_barang_status',
-            'update_barang_status',
-            'view_barang_status',
-            'delete_barang_status',
-
         ];
 
         foreach ($permissions as $permission) {

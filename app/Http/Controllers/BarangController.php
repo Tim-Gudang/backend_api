@@ -3,17 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\BarangResource;
-use App\Models\Barang;
 use App\Services\BarangService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BarangController extends Controller implements HasMiddleware
 {
@@ -22,7 +15,8 @@ class BarangController extends Controller implements HasMiddleware
     {
         return [
             'auth:api',
-            // new Middleware('permission:view_barang', only: ['index']),
+
+            new Middleware('permission:view_barang', only: ['index']),
             new Middleware('permission:create_barang', only: ['store']),
             new Middleware('permission:update_barang', only: ['update']),
             new Middleware('permission:delete_barang', only: ['destroy']),

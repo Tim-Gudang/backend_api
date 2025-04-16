@@ -23,6 +23,12 @@ class UserService
         return $this->userRepository->getAll();
     }
 
+    public function getOperators()
+    {
+        return $this->userRepository->getOperators();
+    }
+
+
     public function getById($id)
     {
         return $this->userRepository->getById($id);
@@ -104,6 +110,7 @@ class UserService
 
         return $this->userRepository->getById($id);
     }
+
     public function deleteAvatar($id)
     {
         $user = $this->userRepository->getById($id);

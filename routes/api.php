@@ -32,6 +32,7 @@ Route::middleware(['auth:api'])->group(function () {
         return response()->json(['message' => 'Hanya Superadmin bisa akses']);
     });
 
+    Route::get('user/operators', [UserController::class, 'getOperators']);
     Route::apiResource('users', UserController::class);
     Route::post('/users/change-password', [UserController::class, 'changePassword']);
     Route::delete('/users/{id}/avatar', [UserController::class, 'deleteAvatar']);
@@ -46,14 +47,13 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('transaction-types', TransactionTypeController::class);
 
+    Route::apiResource('transactions', TransactionController::class);
+
     Route::apiResource('jenis-barangs', JenisBarangController::class);
     Route::patch('jenis-barang/{id}/restore', [JenisBarangController::class, 'restore']);
     Route::delete('jenis-barang/{id}/force-delete', [JenisBarangController::class, 'forceDelete']);
 
     //barang
-    Route::apiResource('barangs', BarangController::class);
-    Route::apiResource('transactions', TransactionController::class);
-
     Route::apiResource('barangs', BarangController::class);
 
     Route::get('/barang/qrcode/save/{id}', [QRCodeController::class, 'generateQRCodeImage']);
@@ -63,11 +63,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/export-pdf', [QRCodeController::class, 'generateAllQRCodesPDF']);
 
 });
-
-Route::post('/toggle-permission', [PermissionController::class, 'togglePermission'])
-->middleware(['auth:api', 'role_or_permission:superadmin|manage_permissions']);
+Route::middleware(['auth:api', 'role_or_permission:superadmin|manage_permissions'])->group(function () {
+    Route::post('/toggle-permission', [PermissionController::class, 'togglePermission']);
+    Route::get('/permission', [PermissionController::class, 'index']);
+});
 
 //memastikan cek role login
 Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
 
-Route::apiResource('barangs', BarangController::class);

@@ -34,6 +34,12 @@ class UserController extends Controller implements HasMiddleware
         return UserResource::collection($this->userService->getAll());
     }
 
+    public function getOperators()
+    {
+        $operators = $this->userService->getOperators();
+        return UserResource::collection($operators);
+    }
+
     public function show($id)
     {
         try {
@@ -80,6 +86,7 @@ class UserController extends Controller implements HasMiddleware
             ], 500);
         }
     }
+
     public function deleteAvatar($id)
     {
         try {
@@ -95,6 +102,7 @@ class UserController extends Controller implements HasMiddleware
             ], 400);
         }
     }
+
 
     public function destroy($id)
     {
