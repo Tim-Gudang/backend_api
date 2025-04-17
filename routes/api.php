@@ -70,4 +70,3 @@ Route::middleware(['auth:api', 'role_or_permission:superadmin|manage_permissions
 
 //memastikan cek role login
 Route::middleware(['auth:api'])->get('/check-roles', [UserController::class, 'checkRoles']);
-
