@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\{Transaction, TransactionDetail, Barang, BarangGudang, Gudang};
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\Request;
 
 class TransactionRepository
 {
@@ -171,4 +172,26 @@ class TransactionRepository
             ->where('gudang_id', $item['gudang_id'])
             ->decrement('stok_dipinjam', $item['quantity']);
     }
+
+    public function checkBarcode(Request $request)
+{
+    $request->validate([
+        'barang_kode' => 'required|string'
+    ]);
+
+    $barang = Barang::where('barang_kode', $request->barang_kode)->first();
+
+    if (!$barang) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Barang tidak ditemukan dengan barcode tersebut.'
+        ], 404);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $barang
+    ]);
+}
+
 }

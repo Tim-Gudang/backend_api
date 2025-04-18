@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TransactionRequest;
 use App\Http\Resources\TransactionResource;
+use App\Models\Barang;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -52,17 +54,26 @@ class TransactionController extends Controller
         return TransactionResource::collection($query->paginate(10));
     }
 
-    public function store(TransactionRequest $request)
+    public function checkBarcode($kode)
     {
-        $result = $this->transactionService->processTransaction($request);
+        $barang = Barang::where('barang_kode', $kode)->first();
 
-        if (!$result['success']) {
-            return response()->json(['message' => $result['message'], 'error' => $result['error']], 422);
+        if ($barang) {
+            return response()->json([
+                'success' => true,
+                'data'    => [
+                    'barang_kode' => $barang->barang_kode,
+                    'barang_nama' => $barang->barang_nama,
+                ],
+            ]);
         }
 
         return response()->json([
-            'message' => 'Transaction berhasil dibuat!',
-            'data' => new TransactionResource($result['data'])
-        ]);
+            'success' => false,
+            'message' => 'Barang tidak ditemukan',
+        ], 404);
     }
+
+
+
 }
