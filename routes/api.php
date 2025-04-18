@@ -23,7 +23,7 @@ Route::prefix('auth')->group(function () {
     // untuk logout dan cek user info
     Route::middleware('auth:api')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
-    });
+        Route::get('user', [AuthController::class, 'userInfo'])->name('auth.user');});
 });
 
 // untuk role super admin
