@@ -47,6 +47,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('transaction-types', TransactionTypeController::class);
 
+// routes/api.php
     Route::get('transactions/check-barcode/{kode}', [TransactionController::class, 'checkBarcode']);
     Route::apiResource('transactions', TransactionController::class);
 

@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TransactionRequest;
 use App\Http\Resources\TransactionResource;
 use App\Models\Barang;
+use App\Models\BarangGudang;
+use App\Models\Gudang;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
@@ -33,7 +36,12 @@ class TransactionController extends Controller
 
     public function index(Request $request)
     {
-        $query = Transaction::with(['user', 'transactionType', 'transactionDetails.barang', 'transactionDetails.gudang']);
+        $query = Transaction::with([
+            'user',
+            'transactionType',
+            'transactionDetails.barang',
+            'transactionDetails.gudang'
+        ]);
 
         if (!$request->user()->hasRole('superadmin')) {
             $query->where('user_id', $request->user()->id);
@@ -53,27 +61,22 @@ class TransactionController extends Controller
 
         return TransactionResource::collection($query->paginate(10));
     }
-
-    public function checkBarcode($kode)
+    public function store(TransactionRequest $request)
     {
-        $barang = Barang::where('barang_kode', $kode)->first();
-
-        if ($barang) {
-            return response()->json([
-                'success' => true,
-                'data'    => [
-                    'barang_kode' => $barang->barang_kode,
-                    'barang_nama' => $barang->barang_nama,
-                ],
-            ]);
+        $result = $this->transactionService->processTransaction($request);
+        if (!$result['success']) {
+            return response()->json(['message' => $result['message'], 'error' => $result['error']], 422);
         }
-
         return response()->json([
-            'success' => false,
-            'message' => 'Barang tidak ditemukan',
-        ], 404);
+            'message' => 'Transaction berhasil dibuat!',
+            'data' => new TransactionResource($result['data'])
+        ]);
     }
 
+    public function checkBarcode($barcode)
+    {
+        $result = $this->transactionService->checkBarcode($barcode);
 
-
+        return response()->json($result, $result['status'] == 'success' ? 200 : 404);
+    }
 }

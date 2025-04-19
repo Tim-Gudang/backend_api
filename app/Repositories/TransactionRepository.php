@@ -30,7 +30,7 @@ class TransactionRepository
         return $transaction->load([
             'user:id,name',
             'transactionType:id,name',
-            'transactionDetails.barang:id,barang_kode,barang_nama',
+            'transactionDetails.barang:' . implode(',', (new \App\Models\Barang)->getFillable()),
             'transactionDetails.gudang:id,name'
         ]);
     }
@@ -173,25 +173,8 @@ class TransactionRepository
             ->decrement('stok_dipinjam', $item['quantity']);
     }
 
-    public function checkBarcode(Request $request)
-{
-    $request->validate([
-        'barang_kode' => 'required|string'
-    ]);
-
-    $barang = Barang::where('barang_kode', $request->barang_kode)->first();
-
-    if (!$barang) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Barang tidak ditemukan dengan barcode tersebut.'
-        ], 404);
+    public function findBarangByKode($kode)
+    {
+        return Barang::where('barang_kode', $kode)->first();
     }
-
-    return response()->json([
-        'success' => true,
-        'data' => $barang
-    ]);
-}
-
 }
