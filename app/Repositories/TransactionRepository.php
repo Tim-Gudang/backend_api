@@ -27,10 +27,11 @@ class TransactionRepository
             $this->processTransactionItem($transaction->id, $item, $request->transaction_type_id);
         }
 
+
         return $transaction->load([
             'user:id,name',
             'transactionType:id,name',
-            'transactionDetails.barang:' . implode(',', (new \App\Models\Barang)->getFillable()),
+            'transactionDetails.barang:id,barang_kode,barang_nama',
             'transactionDetails.gudang:id,name'
         ]);
     }

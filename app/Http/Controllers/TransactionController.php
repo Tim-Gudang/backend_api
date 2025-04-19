@@ -4,16 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TransactionRequest;
 use App\Http\Resources\TransactionResource;
-use App\Models\Barang;
-use App\Models\BarangGudang;
-use App\Models\Gudang;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
-use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
