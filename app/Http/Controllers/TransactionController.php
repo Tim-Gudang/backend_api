@@ -77,6 +77,12 @@ class TransactionController extends Controller
     {
         $result = $this->transactionService->checkBarcode($barcode);
 
-        return response()->json($result, $result['status'] == 'success' ? 200 : 404);
+        // Memastikan status yang digunakan sesuai (true/false)
+        if ($result['success'] == 'false') {
+            return response()->json($result, 404);
+        }
+
+        return response()->json($result, 200); // Status true mengembalikan 200
     }
+
 }
