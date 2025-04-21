@@ -18,11 +18,6 @@ class TransactionDetail extends Model
         'quantity',
         'tanggal_kembali'
     ];
-    public function statusBarang()
-    {
-        return $this->belongsTo(BarangStatus::class);
-    }
-
 
     public function transaction()
     {
