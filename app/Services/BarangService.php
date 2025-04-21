@@ -19,9 +19,9 @@ class BarangService
         $this->barangRepository = $barangRepository;
     }
 
-    public function getAllBarang()
+    public function getAllBarang($userId = null, $isSuperadmin = false)
     {
-        return $this->barangRepository->getAll();
+        return $this->barangRepository->getAll($userId, $isSuperadmin);
     }
 
     public function getBarangById($id)

@@ -3,17 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\BarangResource;
-use App\Models\Barang;
 use App\Services\BarangService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller implements HasMiddleware
 {
@@ -37,9 +31,17 @@ class BarangController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $barangs = $this->barangService->getAllBarang();
+        $user = Auth::user();
+
+        
+        $isSuperadmin = $user->hasRole('superadmin');
+        $userId = $user->id;
+
+        $barangs = $this->barangService->getAllBarang($userId, $isSuperadmin);
+
         return BarangResource::collection($barangs);
     }
+
     public function store(Request $request)
     {
         try {

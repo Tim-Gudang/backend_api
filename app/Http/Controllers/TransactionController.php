@@ -53,7 +53,7 @@ class TransactionController extends Controller
             $query->whereBetween('transaction_date', [$request->transaction_date_start, $request->transaction_date_end]);
         }
 
-        return TransactionResource::collection($query->paginate(10));
+        return TransactionResource::collection($query->get());
     }
     public function store(TransactionRequest $request)
     {

@@ -6,11 +6,20 @@ use App\Models\Barang;
 
 class BarangRepository
 {
-    public function getAll()
+    public function getAll($userId = null, $isSuperadmin = false)
     {
-        return Barang::with(['gudangs' => function ($query) {
+        $query = Barang::with(['gudangs' => function ($query) {
             $query->withPivot('stok_tersedia', 'stok_dipinjam', 'stok_maintenance');
-        }])->get();
+        }]);
+
+        if (!$isSuperadmin && $userId !== null) {
+            // Filter hanya barang yang ada di gudang milik user operator
+            $query->whereHas('gudangs', function ($gudangQuery) use ($userId) {
+                $gudangQuery->where('user_id', $userId);
+            });
+        }
+
+        return $query->get();
     }
 
     public function findById($id)
