@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class BarangResource extends JsonResource
 {
@@ -14,6 +15,14 @@ class BarangResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = Auth::user();
+        $isSuperadmin = $user->hasAnyRole(['superadmin', 'admin']);
+
+        $filteredGudangs = $isSuperadmin ? $this->gudangs
+            : $this->gudangs->filter(function ($gudang) use ($user) {
+                return $gudang->user_id === $user->id;
+            });
+
         return [
             'id' => $this->id,
             'barang_kode' => $this->barang_kode,
@@ -29,7 +38,7 @@ class BarangResource extends JsonResource
             'jenisbarang_id' => $this->jenisbarang_id,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            'gudangs' => GudangResource::collection($this->gudangs),
+            'gudangs' => GudangResource::collection($filteredGudangs),
         ];
     }
 }
