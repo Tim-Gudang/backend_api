@@ -69,7 +69,7 @@ class TransactionService
                 'barang_nama' => $barang->barang_nama,
                 'kategori' => $barang->category ? $barang->category->name : null,
                 'stok_tersedia' => $stokTersedia,
-                'gambar' => $barang->barang_gambar,
+                'gambar' => asset('storage/' . $barang->barang_gambar),
                 'satuan' => $barang->satuan ? $barang->satuan->name : 'Tidak Diketahui',
             ]
         ];

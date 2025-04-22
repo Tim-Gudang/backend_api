@@ -86,4 +86,13 @@ class AuthService
             ];
         }
     }
+    public function getUserPermissions($user)
+    {
+        return $this->authRepository->getUserPermissions($user);
+    }
+
+    public function getUserRoles($user)
+    {
+        return $this->authRepository->getUserRoles($user);
+    }
 }

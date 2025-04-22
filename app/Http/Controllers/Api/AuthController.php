@@ -61,4 +61,41 @@ class AuthController extends Controller
             ],
         ], 200);
     }
+    public function refreshPermissions(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthenticated',
+            ], 401);
+        }
+
+        $permissions = $this->authService->getUserPermissions($user);
+        $roles = $this->authService->getUserRoles($user);
+
+        session([
+            'permissions' => $permissions,
+            'roles' => $roles,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'address' => $user->address,
+                    'avatar' => $user->avatar,
+                    'role_id' => $user->role_id,
+                ],
+                'permissions' => $permissions,
+                'roles' => $roles,
+            ],
+        ], 200);
+    }
+
 }
