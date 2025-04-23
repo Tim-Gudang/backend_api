@@ -72,9 +72,11 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Ambil data roles dan permissions
         $permissions = $this->authService->getUserPermissions($user);
         $roles = $this->authService->getUserRoles($user);
 
+        // Simpan ke session
         session([
             'permissions' => $permissions,
             'roles' => $roles,

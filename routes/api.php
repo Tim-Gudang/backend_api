@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\WebController;
 use App\Http\Controllers\BarangCategoryController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BarangStatusController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\JenisBarangController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\RoleController;
@@ -44,10 +46,16 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('satuans', SatuanController::class);
 
+
     Route::apiResource('barang-categories', BarangCategoryController::class);
 
     Route::apiResource('transaction-types', TransactionTypeController::class);
+    Route::apiResource('webs', WebController::class);
+//route laporan
+    Route::get('laporantransaksi', [LaporanController::class, 'laporantransaksi']);
+    Route::get('/laporantransaksi/export-pdf', [TransactionController::class, 'exportPdf'])->name('transactions.exportPdf');
 
+    Route::get('laporanstok',[LaporanController::class,'laporanstok']);
 // routes/api.php
     Route::get('transactions/check-barcode/{kode}', [TransactionController::class, 'checkBarcode']);
     Route::apiResource('transactions', TransactionController::class);

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('web_nama');
             $table->string('web_logo');
             $table->string('web_deskripsi')->nullable();
-            $table->string('id_user')->unique();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
