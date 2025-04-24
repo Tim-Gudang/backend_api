@@ -3,4 +3,6 @@
 namespace App\Repositories;
 
 class LaporanRepositories
-{}
+{
+
+}
