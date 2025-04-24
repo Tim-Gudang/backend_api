@@ -27,8 +27,14 @@ class Gudang extends Model
         return $this->belongsToMany(Barang::class, 'barang_gudangs')->withPivot('stok_tersedia', 'stok_dipinjam', 'stok_maintenance');
     }
 
+    public function gudangs()
+{
+    return $this->belongsToMany(Gudang::class)->withPivot('stok_tersedia');
+}
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 }
+

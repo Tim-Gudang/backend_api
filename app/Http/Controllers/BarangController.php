@@ -33,7 +33,7 @@ class BarangController extends Controller implements HasMiddleware
     {
         $user = Auth::user();
 
-        
+
         $isSuperadmin = $user->hasRole('superadmin');
         $userId = $user->id;
 
@@ -88,4 +88,5 @@ class BarangController extends Controller implements HasMiddleware
         }
         return response()->json(['message' => 'Barang berhasil dihapus'], 200);
     }
+
 }
