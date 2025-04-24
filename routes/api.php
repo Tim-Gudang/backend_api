@@ -8,6 +8,7 @@ use App\Http\Controllers\BarangStatusController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\RoleController;
@@ -46,6 +47,8 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('satuans', SatuanController::class);
 
+    Route::get('/notifikasi', [NotifikasiController::class, 'index']);
+    Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead']);
 
     Route::apiResource('barang-categories', BarangCategoryController::class);
 
@@ -56,6 +59,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/laporantransaksi/export-pdf', [TransactionController::class, 'exportPdf'])->name('transactions.exportPdf');
 
     Route::get('laporanstok',[LaporanController::class,'laporanstok']);
+    Route::get('laporan/stok', [LaporanController::class, 'exportStokPdf']);
+
+
 // routes/api.php
     Route::get('transactions/check-barcode/{kode}', [TransactionController::class, 'checkBarcode']);
     Route::apiResource('transactions', TransactionController::class);

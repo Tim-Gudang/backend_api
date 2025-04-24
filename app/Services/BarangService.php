@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Barang;
+use App\Models\Notifikasi;
 use App\Repositories\BarangRepository;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -202,4 +204,25 @@ class BarangService
     //         ]
     //     ]);
     // }
+    public function reduceStokAndCreateNotification($barang, $jumlah, $gudangId)
+    {
+        $barang->gudangs()->updateExistingPivot($gudangId, [
+            'stok_tersedia' => DB::raw('stok_tersedia - ' . $jumlah)
+        ]);
+
+        $stokTersedia = $barang->gudangs()->sum('stok_tersedia');
+
+        if ($stokTersedia <= 1) {
+            $this->createStokNotification($barang);
+        }
+    }
+
+    protected function createStokNotification($barang)
+    {
+        Notifikasi::create([
+            'user_id' => Auth::id() ?? 1, // fallback to user id 1 (admin)
+            'message' => "Stok barang '{$barang->barang_nama}' hampir habis!",
+            'is_read' => false,
+        ]);
+    }
 }
