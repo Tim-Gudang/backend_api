@@ -32,16 +32,16 @@ class BarangController extends Controller implements HasMiddleware
     public function index()
     {
         $user = Auth::user();
-
-        
+    
         $isSuperadmin = $user->hasRole('superadmin');
+        $isAdmin = $user->hasRole('admin');
         $userId = $user->id;
-
-        $barangs = $this->barangService->getAllBarang($userId, $isSuperadmin);
-
+    
+        $barangs = $this->barangService->getAllBarang($userId, $isSuperadmin, $isAdmin);
+    
         return BarangResource::collection($barangs);
     }
-
+    
     public function store(Request $request)
     {
         try {
@@ -88,4 +88,5 @@ class BarangController extends Controller implements HasMiddleware
         }
         return response()->json(['message' => 'Barang berhasil dihapus'], 200);
     }
+
 }

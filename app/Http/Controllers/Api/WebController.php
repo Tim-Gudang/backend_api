@@ -29,9 +29,12 @@ public function index()
 
 public function show($id)
 {
+    if ((int)$id !== 1) {
+        return response()->json(['message' => 'Data Tidak Ada.'], 404);
+    }
+
     return new WebResource($this->service->getById($id));
 }
-
 public function update(Request $request, $id)
 {
     $request->validate([
