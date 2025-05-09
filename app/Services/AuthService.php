@@ -17,37 +17,38 @@ class AuthService
 
     public function login(array $credentials): array
     {
-        $user = $this->authRepository->findUserByEmail($credentials['email']);
-
+        // Find user by name instead of email
+        $user = $this->authRepository->findUserByName($credentials['name']);
+    
         if (!$user) {
             return [
                 'response_code' => 401,
                 'status' => 'error',
-                'message' => 'Email tidak ditemukan',
+                'message' => 'Name not found',
             ];
         }
-
+    
         if (!Hash::check($credentials['password'], $user->password)) {
             return [
                 'response_code' => 401,
                 'status' => 'error',
-                'message' => 'Password salah',
+                'message' => 'Incorrect password',
             ];
         }
-
+    
         $accessToken = $this->authRepository->createToken($user);
         $permissions = $this->authRepository->getUserPermissions($user);
         $roles = $this->authRepository->getUserRoles($user);
-
+    
         return [
             'response_code' => 200,
             'status' => 'success',
-            'message' => 'Login berhasil',
+            'message' => 'Login successful',
             'data' => [
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'email' => $user->email,
+                    'email' => $user->email, // You can still return email if needed
                     'phone_number' => $user->phone_number,
                     'avatar' => $user->avatar,
                     'role_id' => $user->role_id,
@@ -58,6 +59,7 @@ class AuthService
             ],
         ];
     }
+    
 
     public function logout($user): array
     {

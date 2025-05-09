@@ -27,6 +27,8 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('refresh-permission', [AuthController::class, 'refreshPermissions']);
+
+        Route::get('update-profile', [AuthController::class , 'updateprofil']);
         Route::get('user', [AuthController::class, 'userInfo'])->name('auth.user');
     });
 });
@@ -38,6 +40,7 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     Route::get('user/operators', [UserController::class, 'getOperators']);
+    Route::put('/users/admin-update/{id}', [UserController::class, 'updateUserByAdmin']);
     Route::apiResource('users', UserController::class);
     Route::post('/users/change-password', [UserController::class, 'changePassword']);
     Route::delete('/users/{id}/avatar', [UserController::class, 'deleteAvatar']);

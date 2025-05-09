@@ -71,7 +71,8 @@ class UserController extends Controller implements HasMiddleware
     public function update(Request $request, $id)
     {
         try {
-            $user = $this->userService->update($id, $request->all());
+            $allowedFields = $request->only(['name', 'phone_number', 'avatar']);
+            $user = $this->userService->update($id, $allowedFields);
 
             return response()->json([
                 'message' => 'Profil berhasil diperbarui',
@@ -114,4 +115,22 @@ class UserController extends Controller implements HasMiddleware
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+
+
+    public function updateUserByAdmin(Request $request, $id)
+{
+    try {
+        $user = $this->userService->updateUserByAdmin($id, $request->all());
+
+        return response()->json([
+            'message' => 'Data pengguna berhasil diperbarui oleh admin',
+            'data' => new UserResource($user)
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Gagal memperbarui data pengguna',
+            'error' => $e->getMessage()
+        ], 422);
+    }
+}
 }

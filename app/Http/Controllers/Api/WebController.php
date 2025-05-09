@@ -22,31 +22,34 @@ class WebController extends Controller
 
     // App\Http\Controllers\Api\WebController.php
 
-    public function index()
-    {
-        return WebResource::collection($this->service->getAll());
+public function index()
+{
+    return WebResource::collection($this->service->getAll());
+}
+
+public function show($id)
+{
+    if ((int)$id !== 1) {
+        return response()->json(['message' => 'Data Tidak Ada.'], 404);
     }
 
-    public function show($id)
-    {
-        return new WebResource($this->service->getById($id));
+    return new WebResource($this->service->getById($id));
+}
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'web_nama' => 'sometimes|required|string|max:255',
+        'web_deskripsi' => 'nullable|string',
+        'web_logo' => 'nullable|string',
+    ]);
+
+    $web = $this->service->getById($id);
+    $data = $request->only(['web_nama', 'web_deskripsi']);
+    $data['user_id'] = Auth::id();
+
+    if ($request->has('web_logo')) {
+        $data['web_logo'] = $this->replaceImage($web->web_logo, $request->web_logo);
     }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'web_nama' => 'sometimes|required|string|max:255',
-            'web_deskripsi' => 'nullable|string',
-            'web_logo' => 'nullable|string',
-        ]);
-
-        $web = $this->service->getById($id);
-        $data = $request->only(['web_nama', 'web_deskripsi']);
-        $data['user_id'] = Auth::id();
-
-        if ($request->has('web_logo')) {
-            $data['web_logo'] = $this->replaceImage($web->web_logo, $request->web_logo);
-        }
 
         $web = $this->service->update($id, $data);
         return new WebResource($web);

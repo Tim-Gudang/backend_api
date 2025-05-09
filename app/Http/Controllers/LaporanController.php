@@ -73,7 +73,9 @@ class LaporanController extends Controller
     public function exportStokPdf()
     {
         $user         = Auth::user();
+
         $isSuperadmin = $user->hasAnyRole(['superadmin', 'admin']);
+
         $barangs      = $this->barangService->getAllBarang($user->id, $isSuperadmin);
 
         Pdf::setOptions(['isRemoteEnabled' => true]);
@@ -173,6 +175,7 @@ class LaporanController extends Controller
         </html>";
 
         // Generate & simpan
+
         $pdf     = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
         $pdfPath = 'laporan/laporan_stok.pdf';
         Storage::disk('public')->put($pdfPath, $pdf->output());
@@ -292,10 +295,12 @@ class LaporanController extends Controller
     </head>
     <body>
       <div class='header'>";
+
         if ($logoSrc) {
             $html .= "<img src='{$logoSrc}' alt='Logo' />";
         }
         $html .= "<h1>Laporan Transaksi</h1>
+
       </div>
       <table>
         <thead>
@@ -313,6 +318,7 @@ class LaporanController extends Controller
         </thead>
         <tbody>";
 
+
         // 4. Isi baris data
         $no = 1;
         foreach ($transaksis as $trx) {
@@ -325,6 +331,7 @@ class LaporanController extends Controller
             <td>{$no}</td>
             <td>{$trx->transaction_code}</td>
             <td>" . date('Y-m-d H:i', strtotime($trx->transaction_date)) . "</td>
+
             <td>{$trx->user->name}</td>
             <td>{$trx->transactionType->name}</td>
             <td>{$det->barang->barang_nama}</td>
@@ -332,15 +339,18 @@ class LaporanController extends Controller
             <td>{$det->quantity}</td>
             <td>{$tglKembali}</td>
           </tr>";
+
                 $no++;
             }
         }
 
         $html .= "
+
         </tbody>
       </table>
     </body>
     </html>";
+
 
         // 5. Generate & simpan PDF
         Pdf::setOptions(['isRemoteEnabled' => true]);
@@ -404,6 +414,7 @@ class LaporanController extends Controller
 
         // 4. Bangun HTML
         $html = "
+
     <html>
     <head>
       <meta charset='utf-8'>
@@ -421,6 +432,7 @@ class LaporanController extends Controller
     </head>
     <body>
       <div class='header'>";
+
         if ($logoSrc) {
             $html .= "<img src='{$logoSrc}' alt='Logo' />";
         }
@@ -459,6 +471,7 @@ class LaporanController extends Controller
             <td>{$det->quantity}</td>
             <td>{$tglKembali}</td>
           </tr>";
+
                 $no++;
             }
         }
@@ -468,7 +481,6 @@ class LaporanController extends Controller
       </table>
     </body>
     </html>";
-
         // 6. Generate & simpan PDF
         Pdf::setOptions(['isRemoteEnabled' => true]);
         $pdf      = Pdf::loadHTML($html)->setPaper('a4', 'landscape');
