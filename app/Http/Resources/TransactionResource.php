@@ -13,6 +13,7 @@ class TransactionResource extends JsonResource
             'id' => $this->id,
             'transaction_code' => $this->transaction_code,
             'transaction_date' => $this->transaction_date ? date('Y-m-d H:i:s', strtotime($this->transaction_date)) : null,
+            'description' => $this->description,
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,

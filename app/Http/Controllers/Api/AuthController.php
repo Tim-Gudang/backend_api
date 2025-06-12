@@ -18,16 +18,16 @@ class AuthController extends Controller
     }
 
     public function login(Request $request): JsonResponse
-{
-    $credentials = $request->validate([
-        'name' => 'required|string',
-        'password' => 'required|string',
-    ]);
+    {
+        $credentials = $request->validate([
+            'name' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-    $result = $this->authService->login($credentials);
+        $result = $this->authService->login($credentials);
 
-    return response()->json($result, $result['response_code']);
-}
+        return response()->json($result, $result['response_code']);
+    }
 
 
     public function logout(Request $request): JsonResponse
@@ -67,6 +67,4 @@ class AuthController extends Controller
             ],
         ], 200);
     }
-
-
 }

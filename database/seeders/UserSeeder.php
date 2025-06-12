@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
        $operatorRole = Role::where('name', 'operator')->first();
 
        $superAdmin = User::create([
-           'name' => 'Super Admin',
+           'name' => 'superadmin',
            'email' => 'superadmin@example.com',
            'password' => Hash::make('password123'),
            'role_id' => $superAdminRole->id,

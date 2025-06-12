@@ -38,6 +38,7 @@ class TransactionService
             ];
         }
     }
+
     public function checkBarcode($barcode)
     {
         $barang = $this->transactionRepo->findBarangByKode($barcode);
@@ -73,5 +74,30 @@ class TransactionService
                 'satuan' => $barang->satuan ? $barang->satuan->name : 'Tidak Diketahui',
             ]
         ];
+    }
+
+    public function find($id)
+    {
+        return $this->transactionRepo->find($id);
+    }
+    public function updateTransaction($id, $data)
+    {
+        DB::beginTransaction();
+        try {
+            $transaction = $this->transactionRepo->updateTransactionWithDetails($id, $data);
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Transaksi berhasil diperbarui!',
+                'data' => $transaction
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Transaksi gagal diperbarui!',
+                'error' => $e->getMessage()
+            ];
+        }
     }
 }

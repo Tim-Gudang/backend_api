@@ -53,8 +53,10 @@ class TransactionController extends Controller
             $query->whereBetween('transaction_date', [$request->transaction_date_start, $request->transaction_date_end]);
         }
 
-        return TransactionResource::collection($query->get());
+        // return TransactionResource::collection($query->get());
+        return TransactionResource::collection($query->paginate(10)->withQueryString());
     }
+
     public function store(TransactionRequest $request)
     {
         $result = $this->transactionService->processTransaction($request);
@@ -77,5 +79,42 @@ class TransactionController extends Controller
         }
 
         return response()->json($result, 200); // Status true mengembalikan 200
+    }
+
+    public function show($id)
+    {
+        $transaction = $this->transactionService->find($id);
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        return new TransactionResource($transaction);
+    }
+
+    // public function update($id, TransactionRequest $request)
+    // {
+    //     $transaction = $this->transactionService->updateTransaction($id, $request->validated());
+    //     if (!$transaction) {
+    //         return response()->json(['message' => 'Transaction not found'], 404);
+    //     }
+
+    //     return new TransactionResource($transaction);
+    // }
+
+    public function update(TransactionRequest $request, $id)
+    {
+        $result = $this->transactionService->updateTransaction($id, $request->validated());
+
+        if ($result['success']) {
+            return response()->json([
+                'message' => $result['message'],
+                'data' => $result['data']
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => $result['message'],
+                'error' => $result['error']
+            ], 404);
+        }
     }
 }

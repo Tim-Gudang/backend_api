@@ -17,6 +17,7 @@ class TransactionRequest extends FormRequest
     {
         return [
             'transaction_type_id' => 'required|integer|exists:transaction_types,id',
+            'description' => 'nullable|string|max:255',
             'items' => 'required|array|min:1',
             'items.*.barang_kode' => 'required|exists:barangs,barang_kode',
             'items.*.quantity' => 'required|integer|min:1',

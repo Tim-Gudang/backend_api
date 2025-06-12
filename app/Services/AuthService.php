@@ -19,7 +19,7 @@ class AuthService
     {
         // Find user by name instead of email
         $user = $this->authRepository->findUserByName($credentials['name']);
-    
+
         if (!$user) {
             return [
                 'response_code' => 401,
@@ -27,7 +27,7 @@ class AuthService
                 'message' => 'Name not found',
             ];
         }
-    
+
         if (!Hash::check($credentials['password'], $user->password)) {
             return [
                 'response_code' => 401,
@@ -35,11 +35,11 @@ class AuthService
                 'message' => 'Incorrect password',
             ];
         }
-    
+
         $accessToken = $this->authRepository->createToken($user);
         $permissions = $this->authRepository->getUserPermissions($user);
         $roles = $this->authRepository->getUserRoles($user);
-    
+
         return [
             'response_code' => 200,
             'status' => 'success',
@@ -59,7 +59,7 @@ class AuthService
             ],
         ];
     }
-    
+
 
     public function logout($user): array
     {

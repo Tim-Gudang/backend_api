@@ -25,6 +25,8 @@ return new class extends Migration
             ['name' => 'Barang Keluar', 'slug' => 'barang_keluar'],
             ['name' => 'Peminjaman', 'slug' => 'peminjaman'],
             ['name' => 'Pengembalian', 'slug' => 'pengembalian'],
+            ['name' => 'Maintenance', 'slug' => 'maintenance'],
+            ['name' => 'Selesai Maintenance', 'slug' => 'selesai_maintenance'],
         ]);
     }
 

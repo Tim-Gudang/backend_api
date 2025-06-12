@@ -53,13 +53,12 @@ class LaporanController extends Controller
             $query->whereBetween('transaction_date', [$request->transaction_date_start, $request->transaction_date_end]);
         }
 
-        return TransactionResource::collection($query->paginate(10));
+        return TransactionResource::collection($query->paginate(10)->withQueryString());
     }
 
     public function laporanstok()
     {
         $user = Auth::user();
-
 
         $isSuperadmin = $user->hasRole('superadmin');
         $userId = $user->id;
