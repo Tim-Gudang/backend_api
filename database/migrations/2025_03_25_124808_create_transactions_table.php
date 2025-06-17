@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('transaction_type_id')->constrained('transaction_types')->onDelete('cascade');
             $table->string('transaction_code')->unique();
+            $table->string('description', 255)->nullable();
             $table->date('transaction_date');
             $table->softDeletes();
             $table->timestamps();

@@ -8,7 +8,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -76,15 +75,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function sendEmailVerificationNotification()
     {
-
-        // Cek apakah ada pending email di cache
-        $pendingEmail = Cache::get('pending_email_' . $this->id);
-
-        // Jika ada pending email dan notification adalah CustomVerifyEmail, kirim ke email baru
-        if ($pendingEmail && $notification instanceof \App\Notifications\CustomVerifyEmail) {
-            return $pendingEmail;
-        }
-
-        // Default: kirim ke email yang tersimpan di database
-        return $this->email;    }
+        $this->notify(new \App\Notifications\CustomVerifyEmail);
+    }
 }

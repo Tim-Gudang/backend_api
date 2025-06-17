@@ -13,11 +13,13 @@ class WebSeeder extends Seeder
      */
     public function run(): void
     {
-        Web::create([
-            'web_nama' => 'Sistem Inventaris',
-            'web_deskripsi' => 'Deskripsi default sistem.',
-            'web_logo' => asset('storage/logo_icon.png'),
-            'user_id' => 1,
-        ]);
+        if (!Web::exists()) {
+            Web::create([
+                'web_nama' => 'Sistem Inventaris',
+                'web_deskripsi' => 'Deskripsi default sistem.',
+                'web_logo' => 'storage/img/web/logo_icon.png',
+                'user_id' => 1,
+            ]);
+        }
     }
 }
